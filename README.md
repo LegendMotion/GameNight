@@ -37,4 +37,3 @@ Planen for admin dashbordet er følgende:
  - Legge inn midlertidige beskjeder
  - Opprette/Lage custom games
  - More to come...
-```
