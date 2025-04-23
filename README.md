@@ -1,39 +1,61 @@
-# GameNight
+# GameNight 🎉
 
-GameNight er ett nytt drikkespill konsept av LegendMotion som inneholder flere ulike faktorer.
+**GameNight** is a web-based drinking game platform you can install on your phone and play with friends — even offline.
 
+---
 
-# GameModes
+## 🔥 Overview
 
-Spillet har ulike gamemodes:
+This is a Progressive Web App (PWA) designed to run on a simple Apache web server (no login or backend required). GameNight allows users to:
 
- - Jeg har aldri
- - Nødt eller sannhet
- - Spinn flasken
+- Input player names
+- Pick or search for public/private games
+- Play randomized challenges (like Never Have I Ever, Spill the Tea, or physical challenges)
+- Create, edit, and share games using a built-in JSON editor
 
-## Forslag
+---
 
-For å hele tiden skaffe nytt innhold inn i GameNight er målet og gjøre det slikt at brukere selv kan sende inn forslag som legges til de ulike gamemodene. Systemet vil da sjekke etter duplikater og alle nye forslag må manuelt godkjennes av en moderator.
+## 🧩 Features
 
-## Lønnsomhet
+- 🕹️ Static game definitions via JSON files
+- 🔄 JSON Editor for creating/editing games
+- 📲 PWA-ready: install and play offline
+- 🔍 Search games by title or ID
+- 🔒 Public/private games
+- 📸 Game previews with image, title, description
+- 💬 Multi-language support (mainly Norwegian to start)
+- 🧠 Modular: Easily add new challenge/game types
+- 💸 Optional ads (AdSense/AdMob support planned)
+- 📺 Future: Chromecast support for TV play
+- 🛍️ Future: Links to merch store & drink recipes
 
-Systemet bruker PHP kode og er ment for å kjøre på en shared hosting server. Målet er å tjene inn på appen ved hjelp av reklame. Dette i form av banner i all hovedsak slik at vi slipper store full skjerm annonser for brukere.
+---
 
-## Multi plattform
+## 📁 Project Structure
 
-GameNight er i bunn og grunn bare en web app slik at denne kan kjøres på Windows, MacOS, Linux, Android, iOS, iPad OS. Smart kjøleskap. Egentlig alt som har en moderne nettleser.
+- `src/` - Core app logic and pages
+- `games/` - JSON files representing different games
+- `json-editor/` - A tool to create/edit game files
+- `public/` - Icons, static files
+- `service-worker.js` - Caches app for offline usage
+- `manifest.json` - Required for PWA install
 
-## Custom games
+---
 
-Målet er å også ha mulighet i fremtiden for å lage custom games hvor bedrifter eller for eksempel russegrupper kan ha sin egen game/theme med sin egen farge branding og logo.
+## ✍️ Game Format (JSON)
 
-## Admin area
+Each game file contains an array of prompts, like:
 
-Planen for admin dashbordet er følgende:
-
- - "Swipe" ja eller nei på forslag
- - Endre global theme på spillet
- - Endre head og footer kode
- - Legge inn midlertidige beskjeder
- - Opprette/Lage custom games
- - More to come...
+```json
+{
+  "id": "neverhave1",
+  "title": "Never Have I Ever - Classic",
+  "description": "The original party game, now on your phone.",
+  "public": true,
+  "type": "neverhaveiever",
+  "language": "no",
+  "prompts": [
+    "Never have I ever kissed someone in this room.",
+    "Never have I ever stolen something."
+  ]
+}
