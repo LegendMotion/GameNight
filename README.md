@@ -1,37 +1,35 @@
 # GameNight 🎉
 
-**GameNight** er en nettbasert drikkelek du kan spille med venner – selv uten internett.
+GameNight er en mobiloptimalisert webapp og PWA for drikkeleker. Den fungerer offline, krever ingen innlogging og kjøres på statisk Apache-server.
 
-## Funksjoner
+## 🚀 Funksjoner
+- Spill starter med spillerinput og tilfeldig utfordringer
+- Støtter ulike spilltyper via JSON-filer
+- Spillene kan være private eller offentlige
+- Redigeringsverktøy for JSON-spill
+- Tema-støtte (f.eks. jul, halloween)
+- SEO-optimalisering for artikler og offentlige spill
+- Offline-støtte via PWA/service worker
+- Reklame via Google AdSense
+- Mulig fremtidig støtte for Chromecast og butikk
 
-- 📲 PWA: Installerbar på telefon og kan brukes offline
-- 🔄 Rediger JSON-spillfiler direkte
-- 🔍 Søk etter spill via navn eller ID
-- 🔒 Offentlige og private spill
-- 📸 Spill med bilder og beskrivelse
-- 💬 Støtte for flere språk (standard: norsk)
-- 🧠 Nye spilltyper kan enkelt legges til
-- 💸 Fremtidig støtte for reklame via AdMob
-- 📺 Planlagt Chromecast-støtte
-- 🛍️ Lenker til merch og drinkoppskrifter i fremtiden
+## 📁 Prosjektstruktur
+- `public/` – ikoner, logo, bilder
+- `src/games/` – JSON-spill
+- `src/articles/` – artikler som Ring of Fire
+- `src/pages/` – views, inkludert spillvisning
+- `themes/` – CSS-temaer (f.eks. christmas.css)
+- `theme-config.json` – dato-konfig for temaer
+- `service-worker.js` – cache og offline
+- `manifest.json` – installasjon på mobil
+- `seo/` – SEO-snutter og funksjoner
 
-## Strukturen i et spill (JSON)
+## 🧠 Hvordan bruke
+- Legg inn spillere
+- Velg spill fra Collections eller søk
+- Spillet laster utfordringer og viser én etter én
+- “NAVN” i tekst byttes med tilfeldig spiller
+- Ingen spørsmål gjentas i samme spillrunde
 
-```json
-{
-  "id": "1234",
-  "title": "Kveldens Mix",
-  "description": "...",
-  "image": "games/assets/kveldens-mix.jpg",
-  "public": true,
-  "language": "no",
-  "prompts": [
-    { "type": "challenge", "value": "NAVN må ..." },
-    { "type": "neverhaveiever", "value": "spist ..." },
-    { "type": "yayornay", "question": "...", "options": ["...", "..."] },
-    { "type": "spillthetea", "value": "..." }
-  ]
-}
-```
-
-For utviklerinfo og konvensjoner, se `DEVELOPER_GUIDE.md`.
+## 🛠️ Dev-hjelp
+Se `DEVELOPER_GUIDE.md` og `GPT_REFERENCE.md` for teknisk dokumentasjon.
