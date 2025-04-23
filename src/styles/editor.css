@@ -1,0 +1,9 @@
+
+body {
+  --bs-primary: #ff3131;
+  --bs-secondary: #ff914d;
+}
+
+.challenge-item {
+  background-color: #1e1e1e;
+}

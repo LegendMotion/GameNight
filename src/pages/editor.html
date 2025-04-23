@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GameNight JSON Editor</title>
+  <link rel="icon" href="../assets/icon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="../styles/editor.css" />
+</head>
+<body class="bg-dark text-light">
+  <div class="container py-4">
+    <div class="d-flex align-items-center mb-4">
+      <img src="../assets/logo.png" alt="GameNight Logo" height="40" class="me-3" />
+      <h1 class="h3 mb-0">GameNight JSON Editor</h1>
+    </div>
+
+    <form id="configForm" class="mb-4">
+      <div class="mb-3">
+        <label for="gameTitle" class="form-label">Spillnavn</label>
+        <input type="text" class="form-control" id="gameTitle" required />
+      </div>
+      <div class="mb-3">
+        <label for="gameDescription" class="form-label">Beskrivelse</label>
+        <textarea class="form-control" id="gameDescription" rows="2"></textarea>
+      </div>
+    </form>
+
+    <h2 class="h5">Challenges</h2>
+    <div id="challengesContainer" class="mb-4"></div>
+    <button class="btn btn-outline-light mb-4" onclick="addChallenge()">➕ Legg til challenge</button>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-success" onclick="downloadJson()">💾 Last ned JSON</button>
+      <label class="btn btn-secondary">
+        📂 Åpne JSON-fil
+        <input type="file" id="uploadFile" accept=".json" hidden />
+      </label>
+    </div>
+
+    <div id="status" class="mt-3"></div>
+  </div>
+
+  <script src="../scripts/editor.js"></script>
+</body>
+</html>
