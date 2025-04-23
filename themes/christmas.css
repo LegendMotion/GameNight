@@ -1,0 +1,7 @@
+:root {
+  --bg-color: #002b36;
+  --text-color: #fffacd;
+  --accent-color: #e53935;
+  --logo: url('/public/logo_christmas.png');
+  --bg-image: url('/themes/christmas_bg.jpg');
+}
