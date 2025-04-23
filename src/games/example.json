@@ -1,0 +1,30 @@
+{
+  "id": "1234",
+  "title": "Kveldens Mix",
+  "description": "Et variert utvalg med alt fra morsomme utfordringer til dype bekjennelser.",
+  "image": "games/assets/kveldens-mix.jpg",
+  "public": true,
+  "language": "no",
+  "prompts": [
+    {
+      "type": "challenge",
+      "value": "NAVN må stå på hodet i 30 sekunder"
+    },
+    {
+      "type": "neverhaveiever",
+      "value": "spist en hel pizza alene"
+    },
+    {
+      "type": "yayornay",
+      "question": "NAVN, vil du heller være usynlig eller kunne fly?",
+      "options": [
+        "Usynlig",
+        "Kunne fly"
+      ]
+    },
+    {
+      "type": "spillthetea",
+      "value": "NAVN må fortelle om sitt mest pinlige øyeblikk"
+    }
+  ]
+}
