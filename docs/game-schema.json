@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Game Challenge",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "type": "string", "enum": ["never", "challenge", "truth", "custom"] },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "language": { "type": "string" },
+    "players": { "type": "integer" }
+  },
+  "required": ["id", "type", "title"]
+}
