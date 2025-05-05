@@ -1,6 +1,5 @@
-// Entry point for GameNight
-import { initApp } from './components/init.js';
+import { renderModeSelector } from './components/ModeSelector.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initApp();
+  renderModeSelector();
 });

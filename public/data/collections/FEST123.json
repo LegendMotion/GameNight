@@ -1,0 +1,35 @@
+{
+  "name": "classic_party",
+  "friendlyName": "Klassisk festmodus",
+  "gamecode": "FEST123",
+  "public": true,
+  "language": "no",
+  "image": "/challenges/klassisk.png",
+  "themeOverride": null,
+  "challenges": [
+    {
+      "id": "classic_001",
+      "type": "challenge",
+      "title": "Alle som har vært på ferie i år må ta en slurk",
+      "tags": ["sosial"],
+      "language": "no",
+      "players": 0
+    },
+    {
+      "id": "classic_002",
+      "type": "challenge",
+      "title": "Den eldste i gruppa deler ut to slurker",
+      "tags": ["gruppe", "fordeling"],
+      "language": "no",
+      "players": 1
+    },
+    {
+      "id": "classic_003",
+      "type": "challenge",
+      "title": "Gjør en grimase. De andre må stemme: best grimase får velge noen som skal drikke",
+      "tags": ["morsom", "gruppe"],
+      "language": "no",
+      "players": 1
+    }
+  ]
+}
