@@ -23,12 +23,12 @@ export function showChallenge(collection) {
   }
 
   function renderChallenge(challenge) {
-    app.innerHTML = \`
+    app.innerHTML = `
       <div class="challenge-card">
-        <h3>\${replacePlaceholders(challenge.title)}</h3>
+        <h3>${replacePlaceholders(challenge.title)}</h3>
         <button id="nextBtn">Neste</button>
       </div>
-    \`;
+    `;
     document.getElementById('nextBtn').addEventListener('click', getNextChallenge);
   }
 
