@@ -18,6 +18,10 @@ class ApiTest extends TestCase
         $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST12', '{\"name\":\"classic_party\"}')");
         $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, type TEXT, content TEXT, requirements TEXT, ingredients TEXT, featured_image TEXT, created_at TEXT)');
         $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, created_at) VALUES ('hello', 'Hello', 'game', 'World', 'cards', NULL, 'image.png', '2023-01-01')");
+        $pdo->exec('CREATE TABLE games (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, slug TEXT, visibility TEXT, featured_image TEXT, content TEXT, edit_token TEXT, token_expires_at TEXT)');
+        $pdo->exec("INSERT INTO games (title, slug, visibility, featured_image, content) VALUES ('Public Game', 'public-game', 'public', 'pub.png', 'hi')");
+        $pdo->exec("INSERT INTO games (title, slug, visibility, featured_image, content) VALUES ('Hidden Game', 'hidden-game', 'hidden', NULL, 'secret')");
+        $pdo->exec("INSERT INTO games (title, slug, visibility, featured_image, content, edit_token, token_expires_at) VALUES ('Private Game', 'private-game', 'private', NULL, 'priv', 'secrettoken', '2030-01-01 00:00:00')");
     }
 
     protected function tearDown(): void
@@ -51,5 +55,32 @@ class ApiTest extends TestCase
         $this->assertEquals('game', $data['type']);
         $this->assertEquals('cards', $data['requirements']);
         $this->assertEquals('image.png', $data['featured_image']);
+    }
+
+    public function testGamesEndpointFiltersVisibility(): void
+    {
+        $code = 'include "' . __DIR__ . '/../public/api/games.php";';
+        $output = shell_exec('php -r ' . escapeshellarg($code));
+        $data = json_decode($output, true);
+        $this->assertCount(1, $data);
+        $this->assertEquals('public-game', $data[0]['slug']);
+    }
+
+    public function testGameEndpointRespectsVisibility(): void
+    {
+        $code = 'parse_str("slug=hidden-game", $_GET); include "' . __DIR__ . '/../public/api/game.php";';
+        $output = shell_exec('php -r ' . escapeshellarg($code));
+        $data = json_decode($output, true);
+        $this->assertEquals('Game not found', $data['error']);
+
+        $code = 'parse_str("slug=private-game", $_GET); include "' . __DIR__ . '/../public/api/game.php";';
+        $output = shell_exec('php -r ' . escapeshellarg($code));
+        $data = json_decode($output, true);
+        $this->assertEquals('Access denied', $data['error']);
+
+        $code = 'parse_str("slug=private-game&token=secrettoken", $_GET); include "' . __DIR__ . '/../public/api/game.php";';
+        $output = shell_exec('php -r ' . escapeshellarg($code));
+        $data = json_decode($output, true);
+        $this->assertEquals('Private Game', $data['title']);
     }
 }
