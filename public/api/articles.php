@@ -14,5 +14,16 @@ $posts = $stmt->fetchAll();
 if (empty($posts)) {
     http_response_code(404);
 }
-echo json_encode($posts);
+
+$response = json_encode($posts);
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+    $etag = '"' . md5($response) . '"';
+    header('Cache-Control: public, max-age=3600');
+    header("ETag: $etag");
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
+        http_response_code(304);
+        exit;
+    }
+}
+echo $response;
 ?>
