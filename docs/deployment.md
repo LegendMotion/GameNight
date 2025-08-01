@@ -19,10 +19,13 @@ Denne guiden beskriver hvordan du setter opp GameNight på en egen server.
 3. **Konfigurer database (valgfritt)**
    - Importer `sql/schema.sql` i MySQL.
    - Sett miljøvariablene `DB_HOST`, `DB_NAME`, `DB_USER` og `DB_PASS`, eller rediger `public/api/db.php` direkte.
-4. **Aktiver HTTPS og caching**
+4. **Sett admin-passord**
+   - Generer et bcrypt-hash av ønsket admin-passord.
+   - Sett miljøvariabelen `ADMIN_PASS_HASH` til denne verdien.
+5. **Aktiver HTTPS og caching**
    - PWA-funksjonalitet krever at nettstedet kjøres over HTTPS.
    - Sørg for at `manifest.json` og `service-worker.js` serveres med korrekte MIME-typer.
-5. **Test installasjonen**
+6. **Test installasjonen**
    - Åpne siden i en nettleser og bekreft at utfordringer lastes og at appen fungerer offline etter første besøk.
 
 ## Oppdateringer

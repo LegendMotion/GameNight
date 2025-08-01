@@ -6,18 +6,32 @@ session_set_cookie_params([
     'samesite' => 'Strict'
 ]);
 session_start();
-$hash = getenv('ADMIN_PASS_HASH') ?: '$2y$12$EF2ZteyOXTqCYpP46/MuwuaYwPo/X5YuwlP1r14/BzQMco544Dnn6';
+$hash = getenv('ADMIN_PASS_HASH');
+if ($hash === false) {
+    http_response_code(500);
+    exit('ADMIN_PASS_HASH environment variable not set');
+}
+
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SESSION['login_attempts'] >= 5) {
+        sleep(1);
+    }
     if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $error = 'Ugyldig CSRF-token';
     } elseif (!empty($_POST['password']) && password_verify($_POST['password'], $hash)) {
         session_regenerate_id(true);
         $_SESSION['logged_in'] = true;
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        $_SESSION['login_attempts'] = 0;
         header('Location: new_post.php');
         exit;
     } else {
         $error = 'Feil passord';
+        $_SESSION['login_attempts']++;
     }
 }
 if (empty($_SESSION['csrf_token'])) {
