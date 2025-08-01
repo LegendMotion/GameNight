@@ -1,12 +1,13 @@
 <?php
 header('Content-Type: application/json');
+require_once __DIR__ . '/validate.php';
+require_once __DIR__ . '/db.php';
 $gamecode = $_GET['gamecode'] ?? '';
-if ($gamecode === '') {
+if ($gamecode === '' || !validate_gamecode($gamecode)) {
     http_response_code(400);
-    echo json_encode(['error' => 'Missing gamecode']);
+    echo json_encode(['error' => 'Invalid gamecode']);
     exit;
 }
-require_once __DIR__ . '/db.php';
 $stmt = $pdo->prepare('SELECT data FROM collections WHERE gamecode = ? LIMIT 1');
 $stmt->execute([$gamecode]);
 $row = $stmt->fetch();

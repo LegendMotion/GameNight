@@ -4,17 +4,18 @@ if (empty($_SESSION['logged_in'])) {
     header('Location: index.php');
     exit;
 }
+require_once __DIR__ . '/../api/validate.php';
 require_once __DIR__ . '/../api/db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'] ?? '';
-    $slug = $_POST['slug'] ?? '';
-    $content = $_POST['content'] ?? '';
-    if ($title && $slug && $content) {
+    $title = sanitize_field($_POST['title'] ?? '', 255);
+    $slug = sanitize_field($_POST['slug'] ?? '', 100);
+    $content = sanitize_field($_POST['content'] ?? '', 10000);
+    if ($title !== false && $slug !== false && $content !== false && validate_slug($slug)) {
         $stmt = $pdo->prepare('INSERT INTO posts (slug, title, content, created_at) VALUES (?, ?, ?, NOW())');
         $stmt->execute([$slug, $title, $content]);
         $message = 'Lagret!';
     } else {
-        $error = 'Alle felt må fylles';
+        $error = 'Ugyldige data';
     }
 }
 ?>
