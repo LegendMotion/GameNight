@@ -4,7 +4,17 @@
   "type": "object",
   "properties": {
     "id": { "type": "string" },
-    "type": { "type": "string", "enum": ["never", "challenge", "truth", "custom"] },
+    "type": {
+      "type": "string",
+      "enum": [
+        "never",
+        "challenge",
+        "truth",
+        "custom",
+        "spillthetea",
+        "yayornay"
+      ]
+    },
     "title": { "type": "string" },
     "description": { "type": "string" },
     "tags": { "type": "array", "items": { "type": "string" } },
