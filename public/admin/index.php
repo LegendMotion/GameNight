@@ -4,7 +4,7 @@ $pass = getenv('ADMIN_PASS') ?: 'secret';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['password']) && $_POST['password'] === $pass) {
         $_SESSION['logged_in'] = true;
-        header('Location: new_post.php');
+        header('Location: dashboard.php');
         exit;
     }
     $error = 'Feil passord';
