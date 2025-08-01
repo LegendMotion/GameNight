@@ -12,7 +12,7 @@ if (!preg_match('/^[a-z0-9-]{1,64}$/', $slug)) {
     exit;
 }
 require_once __DIR__ . '/db.php';
-$stmt = $pdo->prepare('SELECT title, content, created_at FROM posts WHERE slug = ? LIMIT 1');
+$stmt = $pdo->prepare('SELECT title, type, content, requirements, ingredients, featured_image, created_at FROM posts WHERE slug = ? LIMIT 1');
 $stmt->execute([$slug]);
 $post = $stmt->fetch();
 if (!$post) {

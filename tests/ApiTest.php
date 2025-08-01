@@ -16,8 +16,8 @@ class ApiTest extends TestCase
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE collections (gamecode TEXT, data TEXT)');
         $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST12', '{\"name\":\"classic_party\"}')");
-        $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, content TEXT, created_at TEXT)');
-        $pdo->exec("INSERT INTO posts (slug, title, content, created_at) VALUES ('hello', 'Hello', 'World', '2023-01-01')");
+        $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, type TEXT, content TEXT, requirements TEXT, ingredients TEXT, featured_image TEXT, created_at TEXT)');
+        $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, created_at) VALUES ('hello', 'Hello', 'game', 'World', 'cards', NULL, 'image.png', '2023-01-01')");
     }
 
     protected function tearDown(): void
@@ -38,7 +38,8 @@ class ApiTest extends TestCase
     {
         $code = 'include "' . __DIR__ . '/../public/api/articles.php";';
         $output = shell_exec('php -r ' . escapeshellarg($code));
-        $this->assertStringContainsString('hello', $output);
+        $data = json_decode($output, true);
+        $this->assertEquals('game', $data[0]['type']);
     }
 
     public function testArticleEndpointReturnsArticle(): void
@@ -47,5 +48,8 @@ class ApiTest extends TestCase
         $output = shell_exec('php -r ' . escapeshellarg($code));
         $data = json_decode($output, true);
         $this->assertEquals('Hello', $data['title']);
+        $this->assertEquals('game', $data['type']);
+        $this->assertEquals('cards', $data['requirements']);
+        $this->assertEquals('image.png', $data['featured_image']);
     }
 }
