@@ -4,5 +4,8 @@
     },
     "scripts": {
         "test": "phpunit --colors=always"
+    },
+    "require": {
+        "sonata-project/google-authenticator": "^2.3"
     }
 }

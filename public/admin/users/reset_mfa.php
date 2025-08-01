@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $error = 'Invalid CSRF token';
     } else {
-        $stmt = $pdo->prepare('UPDATE users SET mfa_secret = NULL WHERE id = ?');
+        $stmt = $pdo->prepare('UPDATE users SET mfa_secret = NULL, mfa_enabled = 0 WHERE id = ?');
         $stmt->execute([$id]);
         $message = 'MFA reset';
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
