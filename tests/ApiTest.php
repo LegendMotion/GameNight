@@ -18,6 +18,7 @@ class ApiTest extends TestCase
         $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST12', '{\"name\":\"classic_party\"}')");
         $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, type TEXT, content TEXT, requirements TEXT, ingredients TEXT, featured_image TEXT, created_at TEXT)');
         $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, created_at) VALUES ('hello', 'Hello', 'game', 'World', 'cards', NULL, 'image.png', '2023-01-01')");
+        $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, created_at) VALUES ('drink', 'Drink', 'drink', 'Cheers', NULL, 'vodka', NULL, '2023-01-02')");
         $pdo->exec('CREATE TABLE games (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, slug TEXT, visibility TEXT, featured_image TEXT, content TEXT, edit_token TEXT, token_expires_at TEXT)');
         $pdo->exec("INSERT INTO games (title, slug, visibility, featured_image, content) VALUES ('Public Game', 'public-game', 'public', 'pub.png', 'hi')");
         $pdo->exec("INSERT INTO games (title, slug, visibility, featured_image, content) VALUES ('Hidden Game', 'hidden-game', 'hidden', NULL, 'secret')");
@@ -43,7 +44,19 @@ class ApiTest extends TestCase
         $code = 'include "' . __DIR__ . '/../public/api/articles.php";';
         $output = shell_exec('php -r ' . escapeshellarg($code));
         $data = json_decode($output, true);
-        $this->assertEquals('game', $data[0]['type']);
+        $this->assertCount(2, $data);
+        $types = array_column($data, 'type');
+        $this->assertContains('game', $types);
+        $this->assertContains('drink', $types);
+    }
+
+    public function testArticlesEndpointCanFilterByType(): void
+    {
+        $code = 'parse_str("type=drink", $_GET); include "' . __DIR__ . '/../public/api/articles.php";';
+        $output = shell_exec('php -r ' . escapeshellarg($code));
+        $data = json_decode($output, true);
+        $this->assertCount(1, $data);
+        $this->assertEquals('drink', $data[0]['type']);
     }
 
     public function testArticleEndpointReturnsArticle(): void
