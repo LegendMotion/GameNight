@@ -11,7 +11,7 @@ $id = $_GET['id'] ?? null;
 if (!$id) {
     exit('ID missing');
 }
-$stmt = $pdo->prepare('SELECT id, email, role, mfa_secret FROM users WHERE id = ?');
+$stmt = $pdo->prepare('SELECT id, email, role, mfa_enabled FROM users WHERE id = ?');
 $stmt->execute([$id]);
 $user = $stmt->fetch();
 if (!$user) {
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $message = 'User updated';
                 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-                $stmt = $pdo->prepare('SELECT id, email, role, mfa_secret FROM users WHERE id = ?');
+                $stmt = $pdo->prepare('SELECT id, email, role, mfa_enabled FROM users WHERE id = ?');
                 $stmt->execute([$id]);
                 $user = $stmt->fetch();
             }
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Update</button>
 </form>
-<p>MFA: <?php echo $user['mfa_secret'] ? 'Enabled' : 'Disabled'; ?><?php if ($user['mfa_secret']): ?> (<a href="reset_mfa.php?id=<?php echo $user['id']; ?>">Reset MFA</a>)<?php endif; ?></p>
+<p>MFA: <?php echo $user['mfa_enabled'] ? 'Enabled' : 'Disabled'; ?><?php if ($user['mfa_enabled']): ?> (<a href="reset_mfa.php?id=<?php echo $user['id']; ?>">Reset MFA</a>)<?php endif; ?></p>
 <p><a href="index.php">Back to users</a></p>
 </body>
 </html>
