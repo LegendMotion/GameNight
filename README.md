@@ -1,68 +1,74 @@
 # 🎉 GameNight – Den ultimate PWA-drikkespillplattformen
 
-Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende webapp for drikkespill, inspirert av Picolo. GameNight kombinerer enkelhet, stemning og fleksibilitet. Den er designet for å brukes på vors, fester og spillkvelder – både på mobil og på TV-skjerm.
+Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende webapp for drikkespill, inspirert av Picolo. Appen er laget for bruk på vors, fester og spillkvelder – både på mobil og TV-skjerm.
 
 🔗 Offisiell side: [https://gamenight.no](https://gamenight.no)
 
----
-
 ## 🚀 Hva er GameNight?
 
-- En **Progressiv Web App (PWA)** som kjører 100 % i nettleseren – ingen installasjon eller innlogging kreves.
-- Brukeren legger inn **navnene på deltakerne**, velger en spillmodus (collection), og appen viser **én tilfeldig utfordring av gangen**.
-- GameNight fungerer også **offline**, takket være caching og lokal lagring.
-- Spillmoduser kan nå hentes dynamisk via et lite PHP-API som leser data fra MySQL. I tillegg er det lagt til en enkel blogg med administrasjonspanel for artikler og drikkeoppskrifter.
+- En **Progressive Web App (PWA)** som kjører 100 % i nettleseren – ingen installasjon eller innlogging.
+- Spillere legger inn **navnene på deltakerne**, velger en spillmodus (collection), og appen viser **én tilfeldig utfordring av gangen**.
+- Fungerer **offline** takket være caching og lokal lagring.
+- Spillmoduser og blogginnhold kan hentes dynamisk via et lite **PHP-API** mot MySQL.
 
----
+## 🛠️ Installasjon på server
+
+GameNight består av statiske filer og et lite PHP-API. Du kan hoste prosjektet på en vanlig Apache- eller Nginx-server.
+
+1. **Klone repoet**
+   ```bash
+   git clone https://github.com/USERNAME/GameNight.git
+   cd GameNight
+   ```
+2. **Kopier `public/` til webserverens rot**  
+   Dette er den prod-klare koden, inkludert `index.html`, service worker og API.
+3. **(Valgfritt) Sett opp database**  
+   - Importer `sql/schema.sql` i MySQL.  
+   - Konfigurer DB-tilkobling via miljøvariabler (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`) eller rediger `public/api/db.php`.
+4. **Aktiver HTTPS** for full PWA-støtte og sørg for at `manifest.json` og `service-worker.js` serveres med riktige MIME-typer.
+
+Se `docs/deployment.md` for mer detaljert veiledning.
 
 ## 📂 Mappestruktur
 
 ```
 GameNight/
-├── public/                # Logoer, mockups, challenges (allerede lastet opp)
-│   ├── mockups/
-│   ├── logos/
-│   └── challenges/
-├── src/                   # Kommer: Kildekoden til appen
-├── docs/                  # All dokumentasjon
-├── README.md              # Denne fila
-└── .gitignore
+├── public/        # Prod-klar kode, API og statiske ressurser
+├── src/           # Arbeidsmappe for fremtidig kildekode
+├── sql/           # Databaseskjema
+├── docs/          # All dokumentasjon
+└── README.md
 ```
-
----
 
 ## 📖 Viktig dokumentasjon
 
-| Fil                            | Beskrivelse |
-|--------------------------------|-------------|
-| `docs/overview.md`             | Hva prosjektet er, inspirasjon, mål |
-| `docs/features.md`             | Komplett funksjonsoversikt |
-| `docs/game-schema.json`        | Struktur på én challenge |
-| `docs/collection-schema.json`  | Struktur på én spillmodus |
-| `docs/structure.md`            | Hvordan filene er organisert |
-| `docs/user-flow.md`            | Hvordan en bruker bruker appen steg-for-steg |
-| `docs/theming.md`              | Hvordan visuelle tema aktiveres basert på dato |
-| `docs/analytics.md`            | GDPR-vennlig bruk av Google Analytics |
-| `docs/content-strategy.md`     | Hvordan vi tenker rundt SEO, AdSense og artikler |
-| `docs/editor.md`               | Krav og mål for editor-verktøyet |
-| `docs/gpt-guidance.md`         | En forklaring spesifikt for GPT/agenter som skal forstå prosjektet |
-| `docs/changelog.md`            | Logg over hva som er bygget når |
-| `docs/languages.md`            | Hvordan språkutvidelse fungerer |
-| `docs/tests.md`                | Hva som må testes og hvordan |
-| `docs/components.md`           | Plan for UI-komponenter |
-| `docs/examples/`               | Eksempeldata: ferdige JSON-filer som kan brukes til testing |
-| `docs/articles/`               | Artikler med regler for klassiske drikkespill (SEO-innhold)
-
----
+| Fil                          | Beskrivelse |
+|------------------------------|-------------|
+| `docs/overview.md`           | Hva prosjektet er, inspirasjon, mål |
+| `docs/features.md`           | Komplett funksjonsoversikt |
+| `docs/game-schema.json`      | Struktur på én challenge |
+| `docs/collection-schema.json`| Struktur på én spillmodus |
+| `docs/structure.md`          | Hvordan filene er organisert |
+| `docs/user-flow.md`          | Hvordan en bruker bruker appen steg-for-steg |
+| `docs/theming.md`            | Hvordan visuelle tema aktiveres basert på dato |
+| `docs/analytics.md`          | GDPR-vennlig bruk av Google Analytics |
+| `docs/content-strategy.md`   | Hvordan vi tenker rundt SEO, AdSense og artikler |
+| `docs/editor.md`             | Krav og mål for editor-verktøyet |
+| `docs/gpt-guidance.md`       | En forklaring for GPT/agenter som skal forstå prosjektet |
+| `docs/changelog.md`          | Logg over hva som er bygget når |
+| `docs/languages.md`          | Hvordan språkutvidelse fungerer |
+| `docs/tests.md`              | Hva som må testes og hvordan |
+| `docs/components.md`         | Plan for UI-komponenter |
+| `docs/deployment.md`         | Detaljert guide for serverinstallasjon og databaseoppsett |
+| `docs/examples/`             | Eksempeldata: ferdige JSON-filer til testing |
+| `docs/articles/`             | Artikler med regler for klassiske drikkespill (SEO-innhold) |
 
 ## 🔒 Sikkerhet og personvern
 
-- Det er **ingen innlogging**, brukere lagrer ingenting online.
-- Spillmoduser lastes **kun manuelt** av prosjektets eier.
+- Ingen innlogging; brukere lagrer ingenting online.
+- Spillmoduser lastes kun manuelt av prosjektets eier.
 - Analyse skjer anonymt med Google Analytics.
-- Fullt i tråd med GDPR og AdSense-retningslinjer.
-
----
+- Fullt i tråd med GDPR- og AdSense-retningslinjer.
 
 ## 🧠 For utviklere og GPT-brukere
 
@@ -73,16 +79,10 @@ Du trenger ikke snakke med prosjektets eier for å forstå GameNight.
 2. `docs/structure.md`
 3. `docs/gpt-guidance.md`
 
-Her vil du forstå alt fra teknologi, struktur, målgruppe og strategi til hvordan utfordringer vises og hvordan temaer fungerer.
-
----
-
 ## 🖼 Eksisterende innhold
 
-- Mockups og UI-design er allerede lastet opp i `public/mockups/`
-- Logoer ligger i `public/logos/`
-- Challenge-titler og bilder ligger i `public/challenges/`
-
----
+- Mockups og UI-design i `public/mockups/`
+- Logoer i `public/logos/`
+- Challenge-titler og bilder i `public/challenges/`
 
 God utvikling – og husk å drikke ansvarlig! 🍻
