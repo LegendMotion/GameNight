@@ -37,7 +37,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!in_array($visibility, ['hidden','private','public'], true)) {
             $visibility = 'public';
         }
-        $challenges = array_values(array_filter($_POST['challenges'] ?? [], fn($c) => trim($c) !== ''));
+        $titles = $_POST['challenges'] ?? [];
+        $tagsInput = $_POST['tags'] ?? [];
+        $challenges = [];
+        foreach ($titles as $idx => $title) {
+            $title = trim($title);
+            if ($title === '') {
+                continue;
+            }
+            $tagsStr = $tagsInput[$idx] ?? '';
+            $tags = array_values(array_filter(array_map('trim', explode(',', $tagsStr)), fn($t) => $t !== ''));
+            $challenges[] = [
+                'id' => (string)($idx + 1),
+                'type' => 'challenge',
+                'title' => $title,
+                'tags' => $tags,
+            ];
+        }
         $image = $data['image'] ?? '';
         if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../uploads/collections/';
@@ -84,7 +100,7 @@ $gameSchemaJson = file_get_contents(__DIR__ . '/../../../docs/game-schema.json')
 <meta charset="UTF-8" />
 <title>Rediger collection</title>
 <link rel="stylesheet" href="/styles/main.css" />
-<style>.invalid{border:2px solid red;}</style>
+<style>.invalid{border:2px solid red;}.drag-handle{cursor:grab;margin-right:4px;}</style>
 </head>
 <body>
 <h1>Rediger collection</h1>
@@ -100,9 +116,14 @@ $gameSchemaJson = file_get_contents(__DIR__ . '/../../../docs/game-schema.json')
 </select>
 <input type="file" name="image" accept="image/*" />
 <div id="challenges">
-<?php foreach ($challenges as $c): ?>
+<?php foreach ($challenges as $c):
+    $title = is_array($c) ? ($c['title'] ?? '') : $c;
+    $tags = is_array($c) ? implode(',', $c['tags'] ?? []) : '';
+?>
     <div class="challenge-row">
-        <input type="text" name="challenges[]" value="<?php echo htmlspecialchars($c, ENT_QUOTES, 'UTF-8'); ?>" />
+        <span class="drag-handle">&#9776;</span>
+        <input type="text" name="challenges[]" value="<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); ?>" />
+        <input type="text" name="tags[]" placeholder="tag1, tag2" value="<?php echo htmlspecialchars($tags, ENT_QUOTES, 'UTF-8'); ?>" />
         <button type="button" class="remove-challenge">Fjern</button>
     </div>
 <?php endforeach; ?>
@@ -124,6 +145,7 @@ $gameSchemaJson = file_get_contents(__DIR__ . '/../../../docs/game-schema.json')
 </form>
 <script type="module">
 import Ajv from 'https://cdn.jsdelivr.net/npm/ajv@8/dist/ajv.esm.js';
+import Sortable from 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/modular/sortable.esm.js';
 import { showChallenge } from '/components/ChallengeCard.js';
 
 const collectionSchema = <?php echo $collectionSchemaJson; ?>;
@@ -142,19 +164,26 @@ const errorBox = document.createElement('div');
 errorBox.style.color = 'red';
 form.insertBefore(errorBox, form.firstChild);
 
-function addRow(value) {
+function addRow(title, tags = '') {
   const div = document.createElement('div');
   div.className = 'challenge-row';
-  div.innerHTML = '<input type="text" name="challenges[]" value="' + value.replace(/"/g, '&quot;') + '"> <button type="button" class="remove-challenge">Fjern</button>';
+  div.innerHTML = '<span class="drag-handle">&#9776;</span>' +
+                  '<input type="text" name="challenges[]" value="' + title.replace(/"/g, '&quot;') + '"> ' +
+                  '<input type="text" name="tags[]" placeholder="tag1, tag2" value="' + tags.replace(/"/g, '&quot;') + '"> ' +
+                  '<button type="button" class="remove-challenge">Fjern</button>';
   div.querySelector('.remove-challenge').addEventListener('click', () => { div.remove(); update(); });
-  div.querySelector('input').addEventListener('input', update);
+  div.querySelectorAll('input').forEach(inp => inp.addEventListener('input', update));
   container.appendChild(div);
 }
 
 addBtn.addEventListener('click', () => { addRow(''); update(); });
 
-container.querySelectorAll('.challenge-row input').forEach(inp => inp.addEventListener('input', update));
-container.querySelectorAll('.remove-challenge').forEach(btn => btn.addEventListener('click', () => { btn.parentElement.remove(); update(); }));
+container.querySelectorAll('.challenge-row').forEach(row => {
+  row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', update));
+  row.querySelector('.remove-challenge').addEventListener('click', () => { row.remove(); update(); });
+});
+
+new Sortable(container, { handle: '.drag-handle', animation: 150, onEnd: update });
 
 form.addEventListener('input', update);
 form.addEventListener('submit', e => { if (!update()) e.preventDefault(); });
@@ -163,11 +192,11 @@ function buildData() {
   const name = form.querySelector('input[name="name"]').value.trim();
   const gamecode = form.querySelector('input[name="gamecode"]').value.trim();
   const visibility = form.querySelector('select[name="visibility"]').value;
-  const challenges = [...form.querySelectorAll('input[name="challenges[]"]')].map((input, idx) => ({
-    id: String(idx + 1),
-    type: 'challenge',
-    title: input.value.trim()
-  })).filter(c => c.title !== '');
+  const challenges = [...container.querySelectorAll('.challenge-row')].map((row, idx) => {
+    const title = row.querySelector('input[name="challenges[]"]').value.trim();
+    const tags = row.querySelector('input[name="tags[]"]').value.split(',').map(t => t.trim()).filter(t => t !== '');
+    return { id: String(idx + 1), type: 'challenge', title, tags };
+  }).filter(c => c.title !== '');
   return { name, gamecode, public: visibility === 'public', challenges };
 }
 
@@ -183,8 +212,8 @@ function update() {
       if (path[1] === 'gamecode') form.querySelector('input[name="gamecode"]').classList.add('invalid');
       if (path[1] === 'challenges' && path[2]) {
         const index = parseInt(path[2], 10);
-        const inputs = form.querySelectorAll('input[name="challenges[]"]');
-        if (inputs[index]) inputs[index].classList.add('invalid');
+        const rows = container.querySelectorAll('.challenge-row');
+        if (rows[index]) rows[index].querySelectorAll('input').forEach(el => el.classList.add('invalid'));
       }
       errorBox.innerHTML += '<div>' + (err.instancePath || 'root') + ' ' + err.message + '</div>';
     });
