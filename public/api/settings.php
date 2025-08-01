@@ -65,6 +65,21 @@ if ($method === 'POST') {
         if (in_array($name, ['integrations_ga_anonymize_ip', 'integrations_ga_respect_dnt'], true)) {
             $value = $value === '1' ? '1' : '0';
         }
+        if ($name === 'integrations_adsense_publisher_id' && $value !== '') {
+            if (!preg_match('/^ca-pub-\d{16}$/', $value)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid AdSense publisher ID']);
+                exit;
+            }
+        }
+        if ($name === 'integrations_adsense_layout') {
+            $allowed = ['', 'banner', 'sidebar'];
+            if (!in_array($value, $allowed, true)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid ad layout']);
+                exit;
+            }
+        }
         if ($name !== '') {
             save_setting($pdo, $name, $value, (int)$_SESSION['user_id']);
         }

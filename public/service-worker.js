@@ -10,6 +10,7 @@ const PRECACHE_URLS = [
   '/components/ChallengeCard.js',
   '/components/ModeSelector.js',
   '/components/PlayerInput.js',
+  '/components/Ads.js',
   '/components/init.js',
   '/GameNight-logo-small.webp',
   '/gamenight_ikon.png',
