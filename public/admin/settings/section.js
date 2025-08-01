@@ -15,7 +15,7 @@ export default function initSection(section, fields) {
         let comp;
         const value = values[field.name] || '';
         if (field.type === 'text') {
-          comp = textInput(field.name, field.label, value);
+          comp = textInput(field.name, field.label, value, field.pattern || '');
         } else if (field.type === 'toggle') {
           comp = toggle(field.name, field.label, value === '1');
         } else if (field.type === 'select') {
@@ -36,6 +36,9 @@ export default function initSection(section, fields) {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!form.reportValidity()) {
+      return;
+    }
     const payload = { settings: {} };
     fields.forEach(field => {
       const input = inputs[field.name];

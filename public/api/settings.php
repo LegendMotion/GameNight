@@ -55,6 +55,16 @@ if ($method === 'POST') {
     foreach ($data['settings'] as $name => $value) {
         $name = trim((string)$name);
         $value = trim((string)$value);
+        if ($name === 'integrations_ga_measurement_id' && $value !== '') {
+            if (!preg_match('/^G-[A-Z0-9]{8,}$/', $value)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid GA measurement ID']);
+                exit;
+            }
+        }
+        if (in_array($name, ['integrations_ga_anonymize_ip', 'integrations_ga_respect_dnt'], true)) {
+            $value = $value === '1' ? '1' : '0';
+        }
         if ($name !== '') {
             save_setting($pdo, $name, $value, (int)$_SESSION['user_id']);
         }

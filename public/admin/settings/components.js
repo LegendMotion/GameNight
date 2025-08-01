@@ -1,4 +1,4 @@
-export function textInput(name, label, value = '') {
+export function textInput(name, label, value = '', pattern = '') {
   const wrapper = document.createElement('div');
   const labelEl = document.createElement('label');
   labelEl.textContent = label;
@@ -6,6 +6,9 @@ export function textInput(name, label, value = '') {
   input.type = 'text';
   input.name = name;
   input.value = value;
+  if (pattern) {
+    input.pattern = pattern;
+  }
   labelEl.appendChild(input);
   wrapper.appendChild(labelEl);
   return { wrapper, input };
