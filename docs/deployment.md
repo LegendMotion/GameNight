@@ -5,6 +5,7 @@ Denne guiden beskriver hvordan du setter opp GameNight på en egen server.
 ## Krav
 - Apache eller Nginx med støtte for HTTPS
 - PHP 8 med PDO MySQL-utvidelse
+- GD eller Imagick PHP-utvidelse for bildeoptimalisering
 - MySQL 5.7+ for lagring av spill, artikler, brukere og innstillinger
 - Git for å hente koden
 

@@ -28,6 +28,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $dest = $uploadDir . $filename;
             if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $dest)) {
+                $base = pathinfo($filename, PATHINFO_FILENAME);
+                $destWebp = $uploadDir . $base . '.webp';
+                $optimized = false;
+                if (extension_loaded('gd') && function_exists('imagewebp')) {
+                    $img = @imagecreatefromstring(file_get_contents($dest));
+                    if ($img !== false) {
+                        $w = imagesx($img);
+                        $h = imagesy($img);
+                        $max = 1200;
+                        if ($w > $max || $h > $max) {
+                            $ratio = min($max / $w, $max / $h);
+                            $newW = (int)($w * $ratio);
+                            $newH = (int)($h * $ratio);
+                            $tmp = imagecreatetruecolor($newW, $newH);
+                            imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newW, $newH, $w, $h);
+                            imagedestroy($img);
+                            $img = $tmp;
+                        }
+                        if (imagewebp($img, $destWebp, 80)) {
+                            $optimized = true;
+                        }
+                        imagedestroy($img);
+                    }
+                } elseif (class_exists('Imagick')) {
+                    try {
+                        $img = new Imagick($dest);
+                        $img->setImageFormat('webp');
+                        $img->resizeImage(1200, 1200, Imagick::FILTER_LANCZOS, 1, true);
+                        $img->setImageCompressionQuality(80);
+                        $img->writeImage($destWebp);
+                        $img->clear();
+                        $img->destroy();
+                        $optimized = true;
+                    } catch (Exception $e) {
+                        error_log('Image optimization failed: ' . $e->getMessage());
+                    }
+                } else {
+                    error_log('Image optimization skipped: no GD or Imagick extension');
+                }
+                if ($optimized) {
+                    unlink($dest);
+                    $filename = $base . '.webp';
+                    $dest = $destWebp;
+                }
                 $featured_image = '/uploads/games/' . $filename;
             }
         }

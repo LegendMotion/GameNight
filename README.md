@@ -38,6 +38,8 @@ Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende
 
 GameNight består av statiske filer, et PHP-API og et administrasjonsgrensesnitt. Du kan hoste prosjektet på en vanlig Apache- eller Nginx-server.
 
+**Forutsetninger:** PHP 8 med PDO MySQL og enten GD- eller Imagick-utvidelsen for bildeoptimalisering.
+
 1. **Klone repoet**
    ```bash
    git clone https://github.com/USERNAME/GameNight.git
