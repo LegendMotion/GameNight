@@ -1,5 +1,6 @@
 const CACHE_VERSION = 'v2';
 const CACHE_NAME = `gamenight-cache-${CACHE_VERSION}`;
+const RUNTIME_CACHE = 'runtime-cache-v1';
 const PRECACHE_URLS = [
   '/',
   '/index.html',
@@ -68,7 +69,34 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
-  );
+  const { request } = event;
+  if (request.method !== 'GET') {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  event.respondWith((async () => {
+    const cache = await caches.open(RUNTIME_CACHE);
+    const cached = await cache.match(request);
+    const fetchPromise = fetch(request)
+      .then(response => {
+        if (response.ok) {
+          cache.put(request, response.clone());
+          limitCache(cache, 50);
+        }
+        return response;
+      })
+      .catch(() => cached);
+
+    event.waitUntil(fetchPromise);
+    return cached || fetchPromise;
+  })());
 });
+
+function limitCache(cache, maxItems) {
+  cache.keys().then(keys => {
+    if (keys.length > maxItems) {
+      cache.delete(keys[0]).then(() => limitCache(cache, maxItems));
+    }
+  });
+}
