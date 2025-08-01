@@ -1,15 +1,5 @@
 <?php
-session_set_cookie_params([
-    'lifetime' => 3600,
-    'path' => '/admin',
-    'httponly' => true,
-    'samesite' => 'Strict'
-]);
-session_start();
-if (empty($_SESSION['logged_in'])) {
-    header('Location: index.php');
-    exit;
-}
+require_once 'auth.php';
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }

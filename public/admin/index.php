@@ -1,41 +1,9 @@
 <?php
-session_set_cookie_params([
-    'lifetime' => 3600,
-    'path' => '/admin',
-    'httponly' => true,
-    'samesite' => 'Strict'
-]);
-session_start();
-$hash = getenv('ADMIN_PASS_HASH');
-if ($hash === false) {
-    http_response_code(500);
-    exit('ADMIN_PASS_HASH environment variable not set');
-}
-
-if (!isset($_SESSION['login_attempts'])) {
-    $_SESSION['login_attempts'] = 0;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($_SESSION['login_attempts'] >= 5) {
-        sleep(1);
-    }
-    if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        $error = 'Ugyldig CSRF-token';
-    } elseif (!empty($_POST['password']) && password_verify($_POST['password'], $hash)) {
-        session_regenerate_id(true);
-        $_SESSION['logged_in'] = true;
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        $_SESSION['login_attempts'] = 0;
-        header('Location: new_post.php');
-        exit;
-    } else {
-        $error = 'Feil passord';
-        $_SESSION['login_attempts']++;
-    }
-}
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+$requireLogin = false;
+require_once 'auth.php';
+if (!empty($_SESSION['user_id'])) {
+    header('Location: new_post.php');
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -47,11 +15,23 @@ if (empty($_SESSION['csrf_token'])) {
 </head>
 <body>
 <h1>Admin</h1>
-<?php if (!empty($error)): ?><p style="color:red;"><?php echo $error; ?></p><?php endif; ?>
-<form method="post">
+<p id="error" style="color:red;"></p>
+<form id="login-form">
+<input type="email" name="email" placeholder="E-post" />
 <input type="password" name="password" placeholder="Passord" />
-<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Logg inn</button>
 </form>
+<script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const resp = await fetch('/api/auth.php', {method: 'POST', body: formData});
+    if (resp.ok) {
+        window.location.href = 'new_post.php';
+    } else {
+        document.getElementById('error').textContent = 'Feil e-post eller passord';
+    }
+});
+</script>
 </body>
 </html>
