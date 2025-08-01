@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json');
+header('Cache-Control: no-store');
 require_once __DIR__ . '/db.php';
 
 $cleared = 0;

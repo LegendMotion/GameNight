@@ -20,5 +20,16 @@ if (!$post) {
     echo json_encode(['error' => 'Article not found']);
     exit;
 }
-echo json_encode($post);
+
+$response = json_encode($post);
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+    $etag = '"' . md5($response) . '"';
+    header('Cache-Control: public, max-age=3600');
+    header("ETag: $etag");
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
+        http_response_code(304);
+        exit;
+    }
+}
+echo $response;
 ?>

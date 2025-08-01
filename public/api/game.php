@@ -34,9 +34,23 @@ if ($game['visibility'] === 'private') {
     }
 }
 
-echo json_encode([
+$response = json_encode([
     'title' => $game['title'],
     'content' => $game['content'],
     'featured_image' => $game['featured_image']
 ]);
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+    if ($game['visibility'] === 'public') {
+        $etag = '"' . md5($response) . '"';
+        header('Cache-Control: public, max-age=3600');
+        header("ETag: $etag");
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
+            http_response_code(304);
+            exit;
+        }
+    } else {
+        header('Cache-Control: no-store');
+    }
+}
+echo $response;
 ?>

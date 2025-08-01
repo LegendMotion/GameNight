@@ -20,5 +20,16 @@ if (!$row) {
     echo json_encode(['error' => 'Collection not found']);
     exit;
 }
-echo $row['data'];
+
+$response = $row['data'];
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+    $etag = '"' . md5($response) . '"';
+    header('Cache-Control: public, max-age=3600');
+    header("ETag: $etag");
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
+        http_response_code(304);
+        exit;
+    }
+}
+echo $response;
 ?>
