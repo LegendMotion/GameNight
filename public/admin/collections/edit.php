@@ -72,14 +72,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         if ($name) {
             $data['name'] = $name;
-            $data['visibility'] = $visibility;
+            $data['public'] = ($visibility === 'public');
             $data['image'] = $image;
             $data['challenges'] = $challenges;
-            $stmt = $pdo->prepare('UPDATE collections SET data = ? WHERE id = ?');
-            $stmt->execute([json_encode($data, JSON_UNESCAPED_UNICODE), $id]);
+            $stmt = $pdo->prepare('UPDATE collections SET data = ?, visibility = ? WHERE id = ?');
+            $stmt->execute([json_encode($data, JSON_UNESCAPED_UNICODE), $visibility, $id]);
             $message = 'Oppdatert!';
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             $collection['data'] = json_encode($data);
+            $collection['visibility'] = $visibility;
         } else {
             $error = 'Navn må fylles';
         }
@@ -88,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $data = json_decode($collection['data'], true) ?: [];
 $name = $data['name'] ?? '';
-$visibility = $data['visibility'] ?? 'public';
+$visibility = $collection['visibility'] ?? 'public';
 $image = $data['image'] ?? '';
 $challenges = $data['challenges'] ?? [];
 $collectionSchemaJson = file_get_contents(__DIR__ . '/../../../docs/collection-schema.json');
