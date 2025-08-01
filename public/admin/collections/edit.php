@@ -22,6 +22,15 @@ $data = json_decode($collection['data'], true) ?: [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $error = 'Ugyldig CSRF-token';
+    } elseif (isset($_POST['generate_token'])) {
+        $token = bin2hex(random_bytes(16));
+        $expires = date('Y-m-d H:i:s', time() + 86400);
+        $stmt = $pdo->prepare('UPDATE collections SET edit_token = ?, token_expires_at = ? WHERE id = ?');
+        $stmt->execute([$token, $expires, $id]);
+        $message = 'Token generert!';
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        $collection['edit_token'] = $token;
+        $collection['token_expires_at'] = $expires;
     } else {
         $name = trim($_POST['name'] ?? '');
         $visibility = $_POST['visibility'] ?? 'public';
@@ -97,6 +106,13 @@ $challenges = $data['challenges'] ?? [];
 <button type="button" id="addChallenge">Legg til utfordring</button>
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Oppdater</button>
+</form>
+<?php if (!empty($collection['edit_token']) && strtotime($collection['token_expires_at']) > time()): ?>
+<p>Ekstern lenke: <a href="/admin/collections/external_edit.php?id=<?php echo $collection['id']; ?>&token=<?php echo htmlspecialchars($collection['edit_token'], ENT_QUOTES, 'UTF-8'); ?>">rediger</a> (utløper <?php echo htmlspecialchars($collection['token_expires_at'], ENT_QUOTES, 'UTF-8'); ?>)</p>
+<?php endif; ?>
+<form method="post" style="margin-top:1em;">
+<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
+<button type="submit" name="generate_token">Generer ekstern lenke</button>
 </form>
 <script>
 (function() {
