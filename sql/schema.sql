@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS games (
 CREATE TABLE IF NOT EXISTS collections (
   id INT AUTO_INCREMENT PRIMARY KEY,
   gamecode VARCHAR(20) NOT NULL UNIQUE,
+  visibility ENUM('public','private','hidden') NOT NULL DEFAULT 'public',
   data JSON NOT NULL,
   edit_token VARCHAR(64) DEFAULT NULL,
   token_expires_at DATETIME DEFAULT NULL

@@ -39,6 +39,22 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+
+  if (url.pathname === '/api/collection.php') {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache =>
+        fetch(event.request).then(response => {
+          if (response.ok) {
+            cache.put(event.request, response.clone());
+          }
+          return response;
+        }).catch(() => cache.match(event.request))
+      )
+    );
+    return;
+  }
+
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() => caches.match('/index.html'))

@@ -14,8 +14,9 @@ class ApiTest extends TestCase
 
         $pdo = new PDO($dsn);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->exec('CREATE TABLE collections (gamecode TEXT, data TEXT, edit_token TEXT, token_expires_at TEXT)');
-        $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST12', '{\"name\":\"classic_party\"}')");
+        $pdo->exec('CREATE TABLE collections (gamecode TEXT, data TEXT, visibility TEXT DEFAULT "public", edit_token TEXT, token_expires_at TEXT)');
+        $pdo->exec("INSERT INTO collections (gamecode, data, visibility) VALUES ('FEST12', '{\"name\":\"classic_party\"}', 'public')");
+        $pdo->exec("INSERT INTO collections (gamecode, data, visibility) VALUES ('PRIV12', '{\"name\":\"private_party\"}', 'private')");
         $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, type TEXT, content TEXT, requirements TEXT, ingredients TEXT, featured_image TEXT, visibility TEXT, created_at TEXT)');
         $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, visibility, created_at) VALUES ('hello', 'Hello', 'game', 'World', 'cards', NULL, 'image.png', 'public', '2023-01-01')");
         $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, visibility, created_at) VALUES ('drink', 'Drink', 'drink', 'Cheers', NULL, 'vodka', NULL, 'public', '2023-01-02')");
@@ -37,6 +38,13 @@ class ApiTest extends TestCase
         $code = 'parse_str("gamecode=FEST12", $_GET); include "' . __DIR__ . '/../public/api/collection.php";';
         $output = shell_exec('php -r ' . escapeshellarg($code));
         $this->assertSame('{"name":"classic_party"}', trim($output));
+    }
+
+    public function testCollectionEndpointRespectsVisibility(): void
+    {
+        $code = 'parse_str("gamecode=PRIV12", $_GET); include "' . __DIR__ . '/../public/api/collection.php";';
+        $output = shell_exec('php -r ' . escapeshellarg($code));
+        $this->assertStringContainsString('Collection not found', $output);
     }
 
     public function testArticlesEndpointReturnsList(): void

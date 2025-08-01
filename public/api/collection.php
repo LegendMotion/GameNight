@@ -12,7 +12,7 @@ if (!preg_match('/^[A-Z0-9]{6}$/', $gamecode)) {
     exit;
 }
 require_once __DIR__ . '/db.php';
-$stmt = $pdo->prepare('SELECT data FROM collections WHERE gamecode = ? LIMIT 1');
+$stmt = $pdo->prepare("SELECT data FROM collections WHERE gamecode = ? AND visibility = 'public' LIMIT 1");
 $stmt->execute([$gamecode]);
 $row = $stmt->fetch();
 if (!$row) {
