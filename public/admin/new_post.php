@@ -22,10 +22,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $slug = $_POST['slug'] ?? '';
         $content = $_POST['content'] ?? '';
         if ($title && $slug && $content) {
-            $stmt = $pdo->prepare('INSERT INTO posts (slug, title, content, created_at) VALUES (?, ?, ?, NOW())');
-            $stmt->execute([$slug, $title, $content]);
-            $message = 'Lagret!';
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            if (!preg_match('/^[a-z0-9-]+$/', $slug)) {
+                $error = 'Slug kan kun inneholde små bokstaver, tall og bindestrek';
+            } else {
+                $check = $pdo->prepare('SELECT COUNT(*) FROM posts WHERE slug = ?');
+                $check->execute([$slug]);
+                if ($check->fetchColumn() > 0) {
+                    $error = 'Slug finnes allerede';
+                } else {
+                    $stmt = $pdo->prepare('INSERT INTO posts (slug, title, content, created_at) VALUES (?, ?, ?, NOW())');
+                    $stmt->execute([$slug, $title, $content]);
+                    $message = 'Lagret!';
+                    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                }
+            }
         } else {
             $error = 'Alle felt må fylles';
         }
