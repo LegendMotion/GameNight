@@ -1,5 +1,11 @@
-export function showChallenge(collection) {
-  const app = document.getElementById('app');
+export function showChallenge(collection, opts = {}) {
+  const {
+    containerId = 'app',
+    nextBtnId = 'nextBtn',
+    applyBackground = true
+  } = opts;
+
+  const app = document.getElementById(containerId);
   const shownIds = new Set();
   const players = JSON.parse(localStorage.getItem('players') || '[]');
 
@@ -43,15 +49,17 @@ export function showChallenge(collection) {
 
   function renderChallenge(challenge) {
     const assets = typeAssets[challenge.type] || typeAssets.challenge;
-    document.body.style.backgroundImage = `url('${assets.background}')`;
+    if (applyBackground) {
+      document.body.style.backgroundImage = `url('${assets.background}')`;
+    }
     app.innerHTML = `
       <div class="challenge-card">
         <img src="${assets.title}" alt="${challenge.type}" />
         <h3>${replacePlaceholders(challenge.title)}</h3>
-        <button id="nextBtn">Neste</button>
+        <button id="${nextBtnId}">Neste</button>
       </div>
     `;
-    document.getElementById('nextBtn').addEventListener('click', getNextChallenge);
+    document.getElementById(nextBtnId).addEventListener('click', getNextChallenge);
   }
 
   getNextChallenge();
