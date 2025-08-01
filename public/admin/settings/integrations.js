@@ -10,5 +10,7 @@ initSection('integrations', [
   { type: 'toggle', name: 'integrations_ga_anonymize_ip', label: 'Anonymize IP' },
   { type: 'toggle', name: 'integrations_ga_respect_dnt', label: 'Respect Do Not Track' },
   { type: 'text', name: 'integrations_discord_webhook', label: 'Discord Webhook URL' },
-  { type: 'select', name: 'integrations_payment_provider', label: 'Payment Provider', options: ['', 'stripe', 'paypal'] }
+  { type: 'select', name: 'integrations_payment_provider', label: 'Payment Provider', options: ['', 'stripe', 'paypal'] },
+  { type: 'text', name: 'integrations_adsense_publisher_id', label: 'AdSense Publisher ID', pattern: 'ca-pub-\\d{16}' },
+  { type: 'select', name: 'integrations_adsense_layout', label: 'Ad Layout', options: ['', 'banner', 'sidebar'] }
 ]);
