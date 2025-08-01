@@ -1,5 +1,5 @@
 <?php
-require_once '../auth.php';
+require_once '../layout.php';
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -55,15 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$title = 'Ny artikkel';
+$page = 'articles';
+$breadcrumbs = [
+    ['url' => '/admin/articles/', 'label' => 'Artikler'],
+    ['label' => 'Ny']
+];
+$help = 'Opprett en ny artikkel.';
+admin_header(compact('title','page','breadcrumbs','help'));
 ?>
-<!DOCTYPE html>
-<html lang="no">
-<head>
-<meta charset="UTF-8" />
-<title>Ny artikkel</title>
-<link rel="stylesheet" href="/styles/main.css" />
-</head>
-<body>
 <h1>Ny artikkel</h1>
 <?php if (!empty($message)): ?><p style="color:green;"><?php echo $message; ?></p><?php endif; ?>
 <?php if (!empty($error)): ?><p style="color:red;"><?php echo $error; ?></p><?php endif; ?>
@@ -81,5 +82,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Lagre</button>
 </form>
-</body>
-</html>
+<?php admin_footer(); ?>

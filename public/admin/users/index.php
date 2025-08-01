@@ -1,19 +1,17 @@
 <?php
 $requireRole = 'admin';
-require_once '../auth.php';
+require_once '../layout.php';
 require_once __DIR__ . '/../../api/db.php';
 
 $stmt = $pdo->query('SELECT id, email, role, mfa_enabled FROM users ORDER BY email');
 $users = $stmt->fetchAll();
+
+$title = 'Users';
+$page = 'users';
+$breadcrumbs = [['label' => 'Brukere']];
+$help = 'Administrer brukerkontoer.';
+admin_header(compact('title','page','breadcrumbs','help'));
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Users</title>
-<link rel="stylesheet" href="/styles/main.css" />
-</head>
-<body>
 <h1>Users</h1>
 <p><a href="create.php">Create user</a></p>
 <table>
@@ -29,5 +27,4 @@ $users = $stmt->fetchAll();
 <?php endforeach; ?>
 </tbody>
 </table>
-</body>
-</html>
+<?php admin_footer(); ?>

@@ -1,5 +1,5 @@
 <?php
-require_once '../auth.php';
+require_once '../layout.php';
 require_once __DIR__ . '/../../api/db.php';
 
 $stmt = $pdo->query('SELECT id, gamecode, visibility, data FROM collections ORDER BY id DESC');
@@ -13,15 +13,13 @@ while ($row = $stmt->fetch()) {
         'name' => $data['name'] ?? ''
     ];
 }
+
+$title = 'Collections';
+$page = 'collections';
+$breadcrumbs = [['label' => 'Samlinger']];
+$help = 'Oversikt over samlinger.';
+admin_header(compact('title','page','breadcrumbs','help'));
 ?>
-<!DOCTYPE html>
-<html lang="no">
-<head>
-<meta charset="UTF-8" />
-<title>Collections</title>
-<link rel="stylesheet" href="/styles/main.css" />
-</head>
-<body>
 <h1>Collections</h1>
 <table>
 <thead><tr><th>Navn</th><th>Gamecode</th><th>Synlighet</th><th>Handlinger</th></tr></thead>
@@ -36,5 +34,4 @@ while ($row = $stmt->fetch()) {
 <?php endforeach; ?>
 </tbody>
 </table>
-</body>
-</html>
+<?php admin_footer(); ?>

@@ -1,6 +1,6 @@
 <?php
 $requireRole = 'admin';
-require_once '../auth.php';
+require_once '../layout.php';
 
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -50,15 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $stmt = $pdo->query('SELECT name, value FROM settings ORDER BY name');
 $settings = $stmt->fetchAll();
+
+$title = 'Settings';
+$page = 'settings';
+$breadcrumbs = [['label' => 'Innstillinger']];
+$help = 'Administrer applikasjonsinnstillinger.';
+admin_header(compact('title','page','breadcrumbs','help'));
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Settings</title>
-<link rel="stylesheet" href="/styles/main.css" />
-</head>
-<body>
 <h1>Settings</h1>
 <p><a href="mail.php">Mail Server</a> | <a href="mfa.php">MFA Options</a></p>
 <?php if (!empty($message)): ?><p style="color:green;"><?php echo $message; ?></p><?php endif; ?>
@@ -82,6 +80,4 @@ $settings = $stmt->fetchAll();
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Save</button>
 </form>
-<p><a href="../index.php">Back to admin</a></p>
-</body>
-</html>
+<?php admin_footer(); ?>
