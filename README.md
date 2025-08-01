@@ -11,7 +11,7 @@ Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende
 - En **Progressiv Web App (PWA)** som kjører 100 % i nettleseren – ingen installasjon eller innlogging kreves.
 - Brukeren legger inn **navnene på deltakerne**, velger en spillmodus (collection), og appen viser **én tilfeldig utfordring av gangen**.
 - GameNight fungerer også **offline**, takket være caching og lokal lagring.
-- Spillmoduser består av JSON-filer lastet manuelt opp av administrator (ingen backend).
+- Spillmoduser kan nå hentes dynamisk via et lite PHP-API som leser data fra MySQL. I tillegg er det lagt til en enkel blogg med administrasjonspanel for artikler og drikkeoppskrifter.
 
 ---
 
