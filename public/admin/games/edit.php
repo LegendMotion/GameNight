@@ -20,6 +20,15 @@ if (!$game) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $error = 'Ugyldig CSRF-token';
+    } elseif (isset($_POST['generate_token'])) {
+        $token = bin2hex(random_bytes(16));
+        $expires = date('Y-m-d H:i:s', time() + 86400);
+        $stmt = $pdo->prepare('UPDATE games SET edit_token = ?, token_expires_at = ? WHERE id = ?');
+        $stmt->execute([$token, $expires, $id]);
+        $message = 'Token generert!';
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        $game['edit_token'] = $token;
+        $game['token_expires_at'] = $expires;
     } else {
         $title = trim($_POST['title'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
@@ -73,6 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <textarea name="content" placeholder="Innhold"><?php echo htmlspecialchars($game['content'], ENT_QUOTES, 'UTF-8'); ?></textarea>
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Oppdater</button>
+</form>
+<?php if (!empty($game['edit_token']) && strtotime($game['token_expires_at']) > time()): ?>
+<p>Ekstern lenke: <a href="/admin/games/external_edit.php?id=<?php echo $game['id']; ?>&token=<?php echo htmlspecialchars($game['edit_token'], ENT_QUOTES, 'UTF-8'); ?>">rediger</a> (utløper <?php echo htmlspecialchars($game['token_expires_at'], ENT_QUOTES, 'UTF-8'); ?>)</p>
+<?php endif; ?>
+<form method="post" style="margin-top:1em;">
+<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
+<button type="submit" name="generate_token">Generer ekstern lenke</button>
 </form>
 </body>
 </html>

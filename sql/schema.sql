@@ -17,7 +17,9 @@ CREATE TABLE IF NOT EXISTS games (
   slug VARCHAR(100) NOT NULL UNIQUE,
   visibility TINYINT(1) NOT NULL DEFAULT 1,
   featured_image VARCHAR(255) NULL,
-  content TEXT NOT NULL
+  content TEXT NOT NULL,
+  edit_token VARCHAR(64) DEFAULT NULL,
+  token_expires_at DATETIME DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS collections (
