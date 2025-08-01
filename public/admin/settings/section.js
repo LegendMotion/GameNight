@@ -1,4 +1,4 @@
-import { textInput, toggle, selectBox } from './components.js';
+import { textInput, toggle, selectBox, textArea } from './components.js';
 import { showToast } from '/components/Toast.js';
 
 export default function initSection(section, fields) {
@@ -20,6 +20,8 @@ export default function initSection(section, fields) {
           comp = toggle(field.name, field.label, value === '1');
         } else if (field.type === 'select') {
           comp = selectBox(field.name, field.label, field.options || [], value);
+        } else if (field.type === 'textarea') {
+          comp = textArea(field.name, field.label, value);
         }
         if (comp) {
           inputs[field.name] = comp.input;
