@@ -5,10 +5,20 @@ export default defineConfig({
   build: {
     outDir: 'public',
     emptyOutDir: false,
-    lib: {
-      entry: resolve(__dirname, 'src/main.js'),
-      formats: ['es'],
-      fileName: () => 'main.js'
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'src/main.js'),
+        adminLogin: resolve(__dirname, 'src/admin/login.js')
+      },
+      output: {
+        entryFileNames: ({ name }) => {
+          if (name === 'adminLogin') {
+            return 'admin/login.js';
+          }
+          return '[name].js';
+        },
+        assetFileNames: 'assets/[name][extname]'
+      }
     }
   },
   publicDir: false
