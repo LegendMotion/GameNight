@@ -11,6 +11,22 @@ Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende
 - Fungerer **offline** takket være caching og lokal lagring.
 - Spillmoduser og blogginnhold kan hentes dynamisk via et lite **PHP-API** mot MySQL.
 
+## ✅ Ferdige funksjoner
+- Spillmoduser lastes via GameCode og JSON-baserte filer
+- Challenges vises i tilfeldig rekkefølge uten gjentakelser
+- Spillernavn lagres i `localStorage`, og placeholderen `{{player}}` erstattes automatisk
+- PWA-funksjoner med manifest og service worker gir offline-støtte
+- Sample-modus `FEST123` tilgjengelig for demo
+
+## 🚧 Gjenstående arbeid før lansering
+- Flere placeholders som `{{next}}` og `{{oldest}}`
+- UI-komponenter med animasjoner og bedre design
+- Editor for å lage og dele egne spillmoduser
+- Offline fallback ved nettverksfeil
+- Tidsstyrte temaer og flere visuelle temaer
+- Artikler og innhold for SEO
+- Automatiserte tester og validering av collections
+
 ## 🛠️ Installasjon på server
 
 GameNight består av statiske filer og et lite PHP-API. Du kan hoste prosjektet på en vanlig Apache- eller Nginx-server.
