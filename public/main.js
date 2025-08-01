@@ -52,23 +52,38 @@ function m() {
     <ul id="playerList"></ul>
     <input id="playerName" placeholder="Spillernavn" />
     <button id="addPlayer">Legg til</button>
+    <p id="playerMessage" style="color: red;"></p>
     <button id="continue">Fortsett</button>
   `;
-  const e = document.getElementById("playerList"), t = [];
+  const e = document.getElementById("playerList"), t = [], n = document.getElementById("playerMessage");
   document.getElementById("addPlayer").addEventListener("click", () => {
     const o = document.getElementById("playerName"), a = o.value.trim();
-    a && (t.push(a), r(), o.value = "");
+    if (!a) {
+      n.textContent = "Skriv inn et navn.";
+      return;
+    }
+    if (t.includes(a)) {
+      n.textContent = "Navnet er allerede lagt til.";
+      return;
+    }
+    t.push(a), r(), o.value = "", n.textContent = "";
   }), document.getElementById("continue").addEventListener("click", () => {
     if (t.length < 2) {
-      alert("Legg til minst to spillere!");
+      n.textContent = "Legg til minst to spillere!";
       return;
     }
     localStorage.setItem("players", JSON.stringify(t)), p();
   });
   function r() {
-    e.innerHTML = "", t.forEach((o) => {
+    e.innerHTML = "", t.forEach((o, i) => {
       const a = document.createElement("li");
-      a.textContent = o, e.appendChild(a);
+      a.textContent = o;
+      const c = document.createElement("button");
+      c.textContent = "Slett";
+      c.addEventListener("click", () => {
+        t.splice(i, 1), r(), t.length >= 2 && (n.textContent = "");
+      });
+      a.appendChild(c), e.appendChild(a);
     });
   }
 }
