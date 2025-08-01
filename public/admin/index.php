@@ -2,7 +2,7 @@
 $requireLogin = false;
 require_once 'auth.php';
 if (!empty($_SESSION['user_id'])) {
-    header('Location: new_post.php');
+    header('Location: articles/index.php');
     exit;
 }
 ?>
@@ -27,7 +27,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const resp = await fetch('/api/auth.php', {method: 'POST', body: formData});
     if (resp.ok) {
-        window.location.href = 'new_post.php';
+        window.location.href = 'articles/index.php';
     } else {
         document.getElementById('error').textContent = 'Feil e-post eller passord';
     }
