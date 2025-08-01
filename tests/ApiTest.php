@@ -16,9 +16,9 @@ class ApiTest extends TestCase
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE collections (gamecode TEXT, data TEXT, edit_token TEXT, token_expires_at TEXT)');
         $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST12', '{\"name\":\"classic_party\"}')");
-        $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, type TEXT, content TEXT, requirements TEXT, ingredients TEXT, featured_image TEXT, created_at TEXT)');
-        $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, created_at) VALUES ('hello', 'Hello', 'game', 'World', 'cards', NULL, 'image.png', '2023-01-01')");
-        $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, created_at) VALUES ('drink', 'Drink', 'drink', 'Cheers', NULL, 'vodka', NULL, '2023-01-02')");
+        $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, type TEXT, content TEXT, requirements TEXT, ingredients TEXT, featured_image TEXT, visibility TEXT, created_at TEXT)');
+        $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, visibility, created_at) VALUES ('hello', 'Hello', 'game', 'World', 'cards', NULL, 'image.png', 'public', '2023-01-01')");
+        $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, visibility, created_at) VALUES ('drink', 'Drink', 'drink', 'Cheers', NULL, 'vodka', NULL, 'public', '2023-01-02')");
         $pdo->exec('CREATE TABLE games (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, slug TEXT, visibility TEXT, featured_image TEXT, content TEXT, edit_token TEXT, token_expires_at TEXT)');
         $pdo->exec("INSERT INTO games (title, slug, visibility, featured_image, content) VALUES ('Public Game', 'public-game', 'public', 'pub.png', 'hi')");
         $pdo->exec("INSERT INTO games (title, slug, visibility, featured_image, content) VALUES ('Hidden Game', 'hidden-game', 'hidden', NULL, 'secret')");
@@ -57,6 +57,17 @@ class ApiTest extends TestCase
         $data = json_decode($output, true);
         $this->assertCount(1, $data);
         $this->assertEquals('drink', $data[0]['type']);
+    }
+
+    public function testArticlesEndpointReturns404WhenNoPublicMatches(): void
+    {
+        $code = 'parse_str("type=unknown", $_GET); include "' . __DIR__ . '/../public/api/articles.php"; echo http_response_code();';
+        $output = shell_exec('php -r ' . escapeshellarg($code));
+        $output = trim($output);
+        $status = (int) substr($output, -3);
+        $data = json_decode(substr($output, 0, -3), true);
+        $this->assertSame([], $data);
+        $this->assertSame(404, $status);
     }
 
     public function testArticleEndpointReturnsArticle(): void
