@@ -1,0 +1,59 @@
+{
+  "name": "sexy_drinking",
+  "friendlyName": "Sexy drikkelek",
+  "gamecode": "SEXY69",
+  "public": true,
+  "language": "no",
+  "image": "public/challenges/sexy.png",
+  "themeOverride": null,
+  "challenges": [
+    {
+      "id": "sexy_never_001",
+      "type": "never",
+      "title": "Jeg har aldri kysset noen i dette rommet. Ta en slurk hvis du har.",
+      "tags": ["sexy", "drikkelek"],
+      "language": "no",
+      "players": 1
+    },
+    {
+      "id": "sexy_challenge_001",
+      "type": "challenge",
+      "title": "Massér skuldrene til personen på høyre side i 30 sekunder.",
+      "tags": ["sexy", "fysisk"],
+      "language": "no",
+      "players": 2
+    },
+    {
+      "id": "sexy_truth_001",
+      "type": "truth",
+      "title": "Hva er den mest sensuelle drømmen du har hatt?",
+      "tags": ["sexy", "samtale"],
+      "language": "no",
+      "players": 1
+    },
+    {
+      "id": "sexy_custom_001",
+      "type": "custom",
+      "title": "Finn på en regel: Hver gang noen sier \"drikk\", må alle ta en slurk.",
+      "tags": ["sexy", "regel"],
+      "language": "no",
+      "players": 1
+    },
+    {
+      "id": "sexy_spillthetea_001",
+      "type": "spillthetea",
+      "title": "Del en flørtete hemmelighet om deg selv som de andre ikke vet.",
+      "tags": ["sexy", "avsløring"],
+      "language": "no",
+      "players": 1
+    },
+    {
+      "id": "sexy_yayornay_001",
+      "type": "yayornay",
+      "title": "Ville du kysset personen til venstre? Si ja eller nei, og drikk hvis svaret er ja.",
+      "tags": ["sexy", "valg"],
+      "language": "no",
+      "players": 2
+    }
+  ]
+}
