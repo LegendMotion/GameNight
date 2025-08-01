@@ -3,6 +3,25 @@ export function showChallenge(collection) {
   const shownIds = new Set();
   const players = JSON.parse(localStorage.getItem('players') || '[]');
 
+  const typeAssets = {
+    challenge: {
+      background: '/backgrounds/challenge.jpg',
+      title: '/titles/challenge.png'
+    },
+    never: {
+      background: '/backgrounds/jegharaldri.jpg',
+      title: '/titles/jegharaldri.png'
+    },
+    spillthetea: {
+      background: '/backgrounds/spillthetea.jpg',
+      title: '/titles/spillthetea.png'
+    },
+    yayornay: {
+      background: '/backgrounds/yayornay.jpg',
+      title: '/titles/yayornay.png'
+    }
+  };
+
   function getNextChallenge() {
     const unused = collection.challenges.filter(c => !shownIds.has(c.id));
     if (unused.length === 0) {
@@ -23,14 +42,18 @@ export function showChallenge(collection) {
   }
 
   function renderChallenge(challenge) {
-    app.innerHTML = \`
+    const assets = typeAssets[challenge.type] || typeAssets.challenge;
+    document.body.style.backgroundImage = `url('${assets.background}')`;
+    app.innerHTML = `
       <div class="challenge-card">
-        <h3>\${replacePlaceholders(challenge.title)}</h3>
+        <img src="${assets.title}" alt="${challenge.type}" />
+        <h3>${replacePlaceholders(challenge.title)}</h3>
         <button id="nextBtn">Neste</button>
       </div>
-    \`;
+    `;
     document.getElementById('nextBtn').addEventListener('click', getNextChallenge);
   }
 
   getNextChallenge();
 }
+
