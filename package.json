@@ -1,0 +1,17 @@
+{
+  "name": "gamenight",
+  "version": "1.0.0",
+  "description": "GameNight PWA",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "echo \"No tests specified\""
+  },
+  "devDependencies": {
+    "vite": "^7.0.6"
+  }
+}

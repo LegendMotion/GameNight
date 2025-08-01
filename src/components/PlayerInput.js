@@ -2,13 +2,13 @@ import { renderModeSelector } from './ModeSelector.js';
 
 export function renderPlayerInput() {
   const app = document.getElementById('app');
-  app.innerHTML = \`
+  app.innerHTML = `
     <h2>Legg til spillere</h2>
     <ul id="playerList"></ul>
     <input id="playerName" placeholder="Spillernavn" />
     <button id="addPlayer">Legg til</button>
     <button id="continue">Fortsett</button>
-  \`;
+  `;
 
   const playerList = document.getElementById('playerList');
   const players = [];

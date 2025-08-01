@@ -3,11 +3,11 @@ import { showChallenge } from './ChallengeCard.js';
 
 export function renderModeSelector() {
   const app = document.getElementById('app');
-  app.innerHTML = \`
+  app.innerHTML = `
     <h2>Velg spillmodus</h2>
     <input id="gamecodeInput" placeholder="FEST123" />
     <button id="loadBtn">Start spill</button>
-  \`;
+  `;
 
   document.getElementById('loadBtn').addEventListener('click', async () => {
     const code = document.getElementById('gamecodeInput').value.trim();

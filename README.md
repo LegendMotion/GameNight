@@ -20,12 +20,17 @@ GameNight består av statiske filer og et lite PHP-API. Du kan hoste prosjektet 
    git clone https://github.com/USERNAME/GameNight.git
    cd GameNight
    ```
-2. **Kopier `public/` til webserverens rot**  
+2. **Bygg prosjektet**
+   ```bash
+   npm install
+   npm run build
+   ```
+3. **Kopier `public/` til webserverens rot**
    Dette er den prod-klare koden, inkludert `index.html`, service worker og API.
-3. **(Valgfritt) Sett opp database**  
-   - Importer `sql/schema.sql` i MySQL.  
+4. **(Valgfritt) Sett opp database**
+   - Importer `sql/schema.sql` i MySQL.
    - Konfigurer DB-tilkobling via miljøvariabler (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`) eller rediger `public/api/db.php`.
-4. **Aktiver HTTPS** for full PWA-støtte og sørg for at `manifest.json` og `service-worker.js` serveres med riktige MIME-typer.
+5. **Aktiver HTTPS** for full PWA-støtte og sørg for at `manifest.json` og `service-worker.js` serveres med riktige MIME-typer.
 
 Se `docs/deployment.md` for mer detaljert veiledning.
 
