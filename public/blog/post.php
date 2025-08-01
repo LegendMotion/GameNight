@@ -22,7 +22,7 @@ if (!$post) {
 <article>
 <h1><?php echo htmlspecialchars($post['title']); ?></h1>
 <?php if (!empty($post['featured_image'])): ?>
-  <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="" />
+  <img loading="lazy" src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="" />
 <?php endif; ?>
 <?php if ($post['type'] === 'game' && !empty($post['requirements'])): ?>
   <h2>What you need</h2>
