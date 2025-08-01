@@ -6,10 +6,10 @@ Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende
 
 ## 🚀 Hva er GameNight?
 
-- En **Progressive Web App (PWA)** som kjører 100 % i nettleseren – ingen installasjon eller innlogging.
+- En **Progressive Web App (PWA)** som kjører 100 % i nettleseren for spillere – ingen installasjon eller innlogging kreves.
 - Spillere legger inn **navnene på deltakerne**, velger en spillmodus (collection), og appen viser **én tilfeldig utfordring av gangen**.
 - Fungerer **offline** takket være caching og lokal lagring.
-- Spillmoduser og blogginnhold kan hentes dynamisk via et lite **PHP-API** mot MySQL.
+- Spillmoduser, artikler og innstillinger administreres via et PHP-basert **admin-grensesnitt** med MySQL som database.
 
 ## ✅ Ferdige funksjoner
 - Spillmoduser lastes via GameCode og JSON-baserte filer
@@ -17,6 +17,12 @@ Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende
 - Spillernavn lagres i `localStorage`, og placeholderen `{{player}}` erstattes automatisk
 - PWA-funksjoner med manifest og service worker gir offline-støtte
 - Sample-modus `FEST123` tilgjengelig for demo
+- **Administrasjonsverktøy**
+  - Innlogging med passord og TOTP-basert MFA
+  - Brukerhåndtering med oppretting, redigering og reset av MFA
+  - Spilladministrasjon med synlighet, bildeopplasting og eksterne redigeringstokens
+  - Artikkel- og bloggadministrasjon med filtrering på type
+  - Innstillinger med revisjonslogg
 
 ## 🚧 Gjenstående arbeid før lansering
 - Flere placeholders som `{{next}}` og `{{oldest}}`
@@ -24,12 +30,13 @@ Velkommen til **GameNight** – en rask, offline-kapabel og sosialt engasjerende
 - Editor for å lage og dele egne spillmoduser
 - Offline fallback ved nettverksfeil
 - Tidsstyrte temaer og flere visuelle temaer
-- Artikler og innhold for SEO
+- Flere artikler og innhold for SEO
 - Automatiserte tester og validering av collections
+- Forbedret admin-grensesnitt og tilgangskontroll
 
 ## 🛠️ Installasjon på server
 
-GameNight består av statiske filer og et lite PHP-API. Du kan hoste prosjektet på en vanlig Apache- eller Nginx-server.
+GameNight består av statiske filer, et PHP-API og et administrasjonsgrensesnitt. Du kan hoste prosjektet på en vanlig Apache- eller Nginx-server.
 
 1. **Klone repoet**
    ```bash
@@ -42,8 +49,8 @@ GameNight består av statiske filer og et lite PHP-API. Du kan hoste prosjektet 
    npm run build
    ```
 3. **Kopier `public/` til webserverens rot**
-   Dette er den prod-klare koden, inkludert `index.html`, service worker og API.
-4. **(Valgfritt) Sett opp database**
+   Dette er den prod-klare koden, inkludert `index.html`, service worker, API og admin-grensesnitt (`/admin`).
+4. **Sett opp database**
    - Importer `sql/schema.sql` i MySQL.
    - Konfigurer DB-tilkobling via miljøvariabler (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`) eller rediger `public/api/db.php`.
 5. **Aktiver HTTPS** for full PWA-støtte og sørg for at `manifest.json` og `service-worker.js` serveres med riktige MIME-typer.
@@ -76,6 +83,7 @@ GameNight/
 | `docs/content-strategy.md`   | Hvordan vi tenker rundt SEO, AdSense og artikler |
 | `docs/editor.md`             | Krav og mål for editor-verktøyet |
 | `docs/gpt-guidance.md`       | En forklaring for GPT/agenter som skal forstå prosjektet |
+| `docs/admin-interface.md`    | Detaljer om admin-grensesnittet |
 | `docs/changelog.md`          | Logg over hva som er bygget når |
 | `docs/languages.md`          | Hvordan språkutvidelse fungerer |
 | `docs/tests.md`              | Hva som må testes og hvordan |
@@ -86,8 +94,8 @@ GameNight/
 
 ## 🔒 Sikkerhet og personvern
 
-- Ingen innlogging; brukere lagrer ingenting online.
-- Spillmoduser lastes kun manuelt av prosjektets eier.
+- Spillere har ingen innlogging; all spillerdata lagres lokalt i nettleseren.
+- Admin-grensesnittet krever innlogging med MFA og logger endringer for revisjon.
 - Analyse skjer anonymt med Google Analytics.
 - Fullt i tråd med GDPR- og AdSense-retningslinjer.
 
