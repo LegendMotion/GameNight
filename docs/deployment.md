@@ -5,7 +5,7 @@ Denne guiden beskriver hvordan du setter opp GameNight på en egen server.
 ## Krav
 - Apache eller Nginx med støtte for HTTPS
 - PHP 8 med PDO MySQL-utvidelse
-- MySQL 5.7+ (valgfritt, kun nødvendig for blogg og dynamiske spillmoduser)
+- MySQL 5.7+ for lagring av spill, artikler, brukere og innstillinger
 - Git for å hente koden
 
 ## Trinn
@@ -16,7 +16,7 @@ Denne guiden beskriver hvordan du setter opp GameNight på en egen server.
    ```
 2. **Kopier til webroot**
    - Last opp innholdet i `public/` til serverens document root.
-3. **Konfigurer database (valgfritt)**
+3. **Konfigurer database**
    - Importer `sql/schema.sql` i MySQL.
    - Sett miljøvariablene `DB_HOST`, `DB_NAME`, `DB_USER` og `DB_PASS`, eller rediger `public/api/db.php` direkte.
 4. **Sett admin-passord**

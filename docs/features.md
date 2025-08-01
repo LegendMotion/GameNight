@@ -9,14 +9,17 @@
 - Navn lagres i localStorage
 - Challenges støtter `{{player}}`-placeholder
 - Sample-modus `FEST123` tilgjengelig
-- Editor planlagt (ikke implementert)
-- Artikler for SEO planlagt
-- Visuell temastøtte planlagt (f.eks. glitch for "virus"-moduser)
+- **Admin-grensesnitt**
+  - Innlogging med passord og TOTP-basert MFA
+  - Spilladministrasjon med synlighet, bildeopplasting og eksterne tokens
+  - Artikkel- og bloggadministrasjon med typefiltrering
+  - Brukerhåndtering med MFA-reset
+  - Innstillinger med revisjonslogg
 
 ## 🛠 Planlagte funksjoner
 - Flere placeholders som `{{next}}`, `{{oldest}}`
 - UI-komponenter med animasjoner
-- Editor for spillmoduser
-- Deling av spillmoduser
+- Editor for spillmoduser og deling av moduser
 - Offline fallback ved nedkobling
-- Temastøtte etter dato
+- Temastøtte etter dato og flere visuelle temaer
+- Flere artikler og forbedret SEO
