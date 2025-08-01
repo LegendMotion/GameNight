@@ -6,6 +6,11 @@ if ($slug === '') {
     echo json_encode(['error' => 'Missing slug']);
     exit;
 }
+if (!preg_match('/^[a-z0-9-]{1,64}$/', $slug)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid slug format']);
+    exit;
+}
 require_once __DIR__ . '/db.php';
 $stmt = $pdo->prepare('SELECT title, content, created_at FROM posts WHERE slug = ? LIMIT 1');
 $stmt->execute([$slug]);

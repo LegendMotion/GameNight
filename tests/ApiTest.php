@@ -15,7 +15,7 @@ class ApiTest extends TestCase
         $pdo = new PDO($dsn);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE collections (gamecode TEXT, data TEXT)');
-        $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST123', '{\"name\":\"classic_party\"}')");
+        $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST12', '{\"name\":\"classic_party\"}')");
         $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, content TEXT, created_at TEXT)');
         $pdo->exec("INSERT INTO posts (slug, title, content, created_at) VALUES ('hello', 'Hello', 'World', '2023-01-01')");
     }
@@ -29,7 +29,7 @@ class ApiTest extends TestCase
 
     public function testCollectionEndpointReturnsData(): void
     {
-        $code = 'parse_str("gamecode=FEST123", $_GET); include "' . __DIR__ . '/../public/api/collection.php";';
+        $code = 'parse_str("gamecode=FEST12", $_GET); include "' . __DIR__ . '/../public/api/collection.php";';
         $output = shell_exec('php -r ' . escapeshellarg($code));
         $this->assertSame('{"name":"classic_party"}', trim($output));
     }
