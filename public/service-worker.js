@@ -41,6 +41,12 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
+  const networkOnlyPaths = ['/admin'];
+  if (networkOnlyPaths.some(path => url.pathname.startsWith(path))) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   if (url.pathname === '/api/collection.php') {
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
