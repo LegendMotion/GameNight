@@ -14,7 +14,7 @@ class ApiTest extends TestCase
 
         $pdo = new PDO($dsn);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->exec('CREATE TABLE collections (gamecode TEXT, data TEXT)');
+        $pdo->exec('CREATE TABLE collections (gamecode TEXT, data TEXT, edit_token TEXT, token_expires_at TEXT)');
         $pdo->exec("INSERT INTO collections (gamecode, data) VALUES ('FEST12', '{\"name\":\"classic_party\"}')");
         $pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, title TEXT, type TEXT, content TEXT, requirements TEXT, ingredients TEXT, featured_image TEXT, created_at TEXT)');
         $pdo->exec("INSERT INTO posts (slug, title, type, content, requirements, ingredients, featured_image, created_at) VALUES ('hello', 'Hello', 'game', 'World', 'cards', NULL, 'image.png', '2023-01-01')");
