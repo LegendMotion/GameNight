@@ -48,3 +48,15 @@ export function selectBox(name, label, options = [], value = '') {
   wrapper.appendChild(labelEl);
   return { wrapper, input: select };
 }
+
+export function textArea(name, label, value = '') {
+  const wrapper = document.createElement('div');
+  const labelEl = document.createElement('label');
+  labelEl.textContent = label;
+  const textarea = document.createElement('textarea');
+  textarea.name = name;
+  textarea.value = value;
+  labelEl.appendChild(textarea);
+  wrapper.appendChild(labelEl);
+  return { wrapper, input: textarea };
+}
