@@ -4,6 +4,7 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 require_once __DIR__ . '/../../api/db.php';
+require_once __DIR__ . '/../../api/audit_log.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
@@ -23,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $stmt = $pdo->prepare('DELETE FROM games WHERE id = ?');
         $stmt->execute([$id]);
+        log_audit($pdo, (int)$_SESSION['user_id'], 'game_delete', (string)$id);
         header('Location: index.php');
         exit;
     }

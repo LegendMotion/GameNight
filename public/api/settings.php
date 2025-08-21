@@ -9,6 +9,7 @@ if (($_SESSION['role'] ?? '') !== 'admin') {
 }
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/audit_log.php';
 
 function save_setting(PDO $pdo, string $name, string $value, int $userId): void {
     $stmt = $pdo->prepare('SELECT value FROM settings WHERE name = ?');
@@ -24,6 +25,7 @@ function save_setting(PDO $pdo, string $name, string $value, int $userId): void 
     if ($oldValue !== $value) {
         $audit = $pdo->prepare('INSERT INTO settings_audit (name, old_value, new_value, changed_by) VALUES (?, ?, ?, ?)');
         $audit->execute([$name, $oldValue, $value, $userId]);
+        log_audit($pdo, $userId, 'settings_change', $name, ['old' => $oldValue, 'new' => $value]);
     }
 }
 
