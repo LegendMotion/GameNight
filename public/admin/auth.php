@@ -12,9 +12,12 @@ if ($requireLogin) {
         header('Location: index.php');
         exit;
     }
-    if (!empty($requireRole) && ($_SESSION['role'] ?? '') !== $requireRole) {
-        http_response_code(403);
-        exit('Access denied');
+    if (!empty($requireRole)) {
+        $roles = is_array($requireRole) ? $requireRole : [$requireRole];
+        if (!in_array($_SESSION['role'] ?? '', $roles, true)) {
+            http_response_code(403);
+            exit('Access denied');
+        }
     }
 }
 ?>
