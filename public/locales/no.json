@@ -1,0 +1,15 @@
+{
+  "admin_title": "GameNight Admin",
+  "articles": "Artikler",
+  "collections": "Samlinger",
+  "games": "Spill",
+  "users": "Brukere",
+  "settings": "Innstillinger",
+  "audit_logs": "Audit Logs",
+  "email": "E-post",
+  "password": "Passord",
+  "login": "Logg inn",
+  "admin_login": "Admin-login",
+  "admin": "Admin",
+  "toggle_theme": "Bytt tema"
+}
