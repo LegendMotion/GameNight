@@ -1,4 +1,5 @@
 <?php
+$requireRole = 'admin';
 require_once '../layout.php';
 require_once __DIR__ . '/../../api/db.php';
 

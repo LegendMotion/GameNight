@@ -6,7 +6,7 @@ if (empty($_SESSION['csrf_token'])) {
 }
 require_once __DIR__ . '/../../api/db.php';
 
-$roles = ['user', 'admin'];
+$roles = ['viewer', 'editor', 'admin'];
 $id = $_GET['id'] ?? null;
 if (!$id) {
     exit('ID missing');
@@ -24,13 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
-        $role = $_POST['role'] ?? 'user';
+        $role = $_POST['role'] ?? 'viewer';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = 'Invalid email';
         } elseif ($password !== '' && strlen($password) < 8) {
             $error = 'Password must be at least 8 characters';
         } elseif (!in_array($role, $roles, true)) {
-            $role = 'user';
+            $role = 'viewer';
         } else {
             $stmt = $pdo->prepare('SELECT COUNT(*) FROM users WHERE email = ? AND id != ?');
             $stmt->execute([$email, $id]);
@@ -70,7 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="email" name="email" value="<?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?>" />
 <input type="password" name="password" placeholder="New password" />
 <select name="role">
-    <option value="user"<?php if ($user['role'] === 'user') echo ' selected'; ?>>User</option>
+    <option value="viewer"<?php if ($user['role'] === 'viewer') echo ' selected'; ?>>Viewer</option>
+    <option value="editor"<?php if ($user['role'] === 'editor') echo ' selected'; ?>>Editor</option>
     <option value="admin"<?php if ($user['role'] === 'admin') echo ' selected'; ?>>Admin</option>
 </select>
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
