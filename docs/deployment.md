@@ -23,10 +23,12 @@ Denne guiden beskriver hvordan du setter opp GameNight på en egen server.
 4. **Sett admin-passord**
    - Generer et bcrypt-hash av ønsket admin-passord.
    - Sett miljøvariabelen `ADMIN_PASS_HASH` til denne verdien.
-5. **Aktiver HTTPS og caching**
+5. **Konfigurer analyse**
+   - Sett miljøvariablene `ANALYTICS_MEASUREMENT_ID`, `ANALYTICS_ANONYMIZE_IP` og `ANALYTICS_RESPECT_DNT` etter behov.
+6. **Aktiver HTTPS og caching**
    - PWA-funksjonalitet krever at nettstedet kjøres over HTTPS.
    - Sørg for at `manifest.json` og `service-worker.js` serveres med korrekte MIME-typer.
-6. **Test installasjonen**
+7. **Test installasjonen**
    - Åpne siden i en nettleser og bekreft at utfordringer lastes og at appen fungerer offline etter første besøk.
 
 ## Spillmodussamlinger
