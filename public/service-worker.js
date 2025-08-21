@@ -22,7 +22,8 @@ const PRECACHE_URLS = [
   '/titles/challenge.png',
   '/titles/jegharaldri.png',
   '/titles/spillthetea.png',
-  '/titles/yayornay.png'
+  '/titles/yayornay.png',
+  '/offline.html'
 ];
 
 self.addEventListener('install', event => {
@@ -49,23 +50,31 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.pathname === '/api/collection.php') {
+  if (url.pathname.startsWith('/api/')) {
     event.respondWith(
-      caches.open(CACHE_NAME).then(cache =>
-        fetch(event.request).then(response => {
+      caches.open(RUNTIME_CACHE).then(async cache => {
+        try {
+          const response = await fetch(event.request);
           if (response.ok) {
             cache.put(event.request, response.clone());
+            limitCache(cache, 50);
           }
           return response;
-        }).catch(() => cache.match(event.request))
-      )
+        } catch (err) {
+          const cached = await cache.match(event.request);
+          return cached || caches.match('/offline.html');
+        }
+      })
     );
     return;
   }
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match('/index.html'))
+      fetch(event.request).catch(async () => {
+        const cached = (await caches.match(event.request)) || (await caches.match('/index.html'));
+        return cached || caches.match('/offline.html');
+      })
     );
     return;
   }
@@ -76,22 +85,22 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  event.respondWith((async () => {
-    const cache = await caches.open(RUNTIME_CACHE);
-    const cached = await cache.match(request);
-    const fetchPromise = fetch(request)
-      .then(response => {
-        if (response.ok) {
-          cache.put(request, response.clone());
-          limitCache(cache, 50);
-        }
-        return response;
-      })
-      .catch(() => cached);
-
-    event.waitUntil(fetchPromise);
-    return cached || fetchPromise;
-  })());
+  event.respondWith(
+    caches.match(request).then(cached => {
+      const fetchPromise = fetch(request)
+        .then(response => {
+          if (response.ok) {
+            caches.open(RUNTIME_CACHE).then(cache => {
+              cache.put(request, response.clone());
+              limitCache(cache, 50);
+            });
+          }
+          return response;
+        })
+        .catch(() => cached || caches.match('/offline.html'));
+      return cached || fetchPromise;
+    })
+  );
 });
 
 function limitCache(cache, maxItems) {
