@@ -38,3 +38,12 @@ Legg statiske samlingsfiler i `public/data/collections` før deploy. Disse filen
 
 ## Oppdateringer
 For å oppdatere, hent siste endringer og synkroniser `public/` på nytt. Husk å kjøre eventuell database-migrasjon ved oppdatering av databasen.
+
+## Loggvedlikehold
+Sett opp en enkel cron-jobb som sjekker loggmappen og fjerner eller arkiverer filer når diskforbruket nærmer seg kvoten. For eksempel:
+
+```cron
+0 * * * * [ $(du -sm /var/www/gamenight/logs | cut -f1) -gt 500 ] && find /var/www/gamenight/logs -name "*.log.gz" -mtime +30 -delete
+```
+
+Tilpass stier og terskelverdier etter miljøet ditt for å unngå at loggene fyller opp disken.
