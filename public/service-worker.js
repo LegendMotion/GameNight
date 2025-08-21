@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `gamenight-cache-${CACHE_VERSION}`;
 const RUNTIME_CACHE = 'runtime-cache-v1';
 const PRECACHE_URLS = [
@@ -51,6 +51,25 @@ self.addEventListener('fetch', event => {
   }
 
   if (url.pathname.startsWith('/api/')) {
+    event.respondWith(
+      caches.open(RUNTIME_CACHE).then(async cache => {
+        try {
+          const response = await fetch(event.request);
+          if (response.ok) {
+            cache.put(event.request, response.clone());
+            limitCache(cache, 50);
+          }
+          return response;
+        } catch (err) {
+          const cached = await cache.match(event.request);
+          return cached || caches.match('/offline.html');
+        }
+      })
+    );
+    return;
+  }
+
+  if (url.pathname.startsWith('/data/collections/')) {
     event.respondWith(
       caches.open(RUNTIME_CACHE).then(async cache => {
         try {
