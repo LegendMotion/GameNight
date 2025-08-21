@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/logging.php';
+
 // Database connection helper
 // Adjust credentials via environment variables for security
 $host = getenv('DB_HOST') ?: 'localhost';
@@ -18,6 +21,8 @@ $options = [
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
+    log_message('critical', 'Database connection failed', ['exception' => $e]);
+    send_alert('Database connection failure');
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed']);
     exit;

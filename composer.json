@@ -6,6 +6,8 @@
         "test": "phpunit --colors=always"
     },
     "require": {
-        "sonata-project/google-authenticator": "^2.3"
+        "sonata-project/google-authenticator": "^2.3",
+        "monolog/monolog": "^3.5",
+        "sentry/sdk": "^4.0"
     }
 }
