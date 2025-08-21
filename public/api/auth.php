@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/audit_log.php';
 use Sonata\GoogleAuthenticator\GoogleAuthenticator;
 $email = $_POST['email'] ?? '';
 $password = $_POST['password'] ?? '';
@@ -45,6 +46,7 @@ if ($user && password_verify($password, $user['password_hash'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['role'] = $user['role'];
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    log_audit($pdo, (int)$user['id'], 'login', '', ['ip' => $_SERVER['REMOTE_ADDR'] ?? '']);
     echo json_encode(['success' => true]);
 } else {
     http_response_code(401);

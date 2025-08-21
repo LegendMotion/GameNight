@@ -4,6 +4,7 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 require_once __DIR__ . '/../../api/db.php';
+require_once __DIR__ . '/../../api/audit_log.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
@@ -78,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare('UPDATE collections SET data = ?, visibility = ? WHERE id = ?');
             $stmt->execute([json_encode($data, JSON_UNESCAPED_UNICODE), $visibility, $id]);
             $message = 'Oppdatert!';
+            log_audit($pdo, (int)$_SESSION['user_id'], 'collection_update', $collection['gamecode']);
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             $collection['data'] = json_encode($data);
             $collection['visibility'] = $visibility;

@@ -4,6 +4,7 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 require_once __DIR__ . '/../../api/db.php';
+require_once __DIR__ . '/../../api/audit_log.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
@@ -110,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute([$title, $slug, $visibility, $featured_image, $content, $id]);
                     $message = 'Oppdatert!';
+                    log_audit($pdo, (int)$_SESSION['user_id'], 'game_update', $slug);
                     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     $stmt = $pdo->prepare('SELECT * FROM games WHERE id = ?');
                     $stmt->execute([$id]);

@@ -35,6 +35,7 @@ function admin_header(array $options = []): void {
     <?php if (user_can(['admin'])): ?>
     <li<?php if ($page === 'users') echo ' class="active"'; ?>><a href="/admin/users/">Brukere</a></li>
     <li<?php if ($page === 'settings') echo ' class="active"'; ?>><a href="/admin/settings/">Innstillinger</a></li>
+    <li<?php if ($page === 'audit_logs') echo ' class="active"'; ?>><a href="/admin/audit_logs/">Audit Logs</a></li>
     <?php endif; ?>
   </ul>
 </aside>

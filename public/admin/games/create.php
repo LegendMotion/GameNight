@@ -4,6 +4,7 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 require_once __DIR__ . '/../../api/db.php';
+require_once __DIR__ . '/../../api/audit_log.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -89,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute([$title, $slug, $visibility, $featured_image, $content]);
                     $message = 'Lagret!';
+                    log_audit($pdo, (int)$_SESSION['user_id'], 'game_create', $slug);
                     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 }
             }
