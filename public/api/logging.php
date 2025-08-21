@@ -17,9 +17,50 @@ if (!is_dir($logDir)) {
     mkdir($logDir, 0777, true);
 }
 
-// Create logger with rotating file handler (daily, 7 files retained)
+// Custom rotating handler that compresses old logs and limits retention
+class GzipRotatingFileHandler extends RotatingFileHandler
+{
+    protected function rotate(): void
+    {
+        // Remember current file before rotation
+        $oldFile = $this->url;
+
+        parent::rotate();
+
+        // Compress the log we just rotated
+        if ($oldFile && file_exists($oldFile)) {
+            $gzFile = $oldFile . '.gz';
+            if ($in = fopen($oldFile, 'rb')) {
+                if ($out = gzopen($gzFile, 'wb9')) {
+                    while (!feof($in)) {
+                        gzwrite($out, fread($in, 8192));
+                    }
+                    gzclose($out);
+                }
+                fclose($in);
+                unlink($oldFile);
+            }
+        }
+
+        // Cleanup old compressed logs beyond maxFiles
+        if ($this->maxFiles > 0) {
+            $pattern = $this->getGlobPattern() . '.gz';
+            $files = glob($pattern) ?: [];
+            if (count($files) > $this->maxFiles) {
+                usort($files, static fn($a, $b) => strcmp($b, $a));
+                foreach (array_slice($files, $this->maxFiles) as $file) {
+                    if (is_writable($file)) {
+                        @unlink($file);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Create logger with rotating file handler (daily, 5 files retained)
 $logger = new Logger('gamenight');
-$rotating = new RotatingFileHandler($logDir . '/app.log', 7, $level, true, 0664);
+$rotating = new GzipRotatingFileHandler($logDir . '/app.log', 5, $level, true, 0664);
 $logger->pushHandler($rotating);
 
 // Optional Sentry integration for error tracking
