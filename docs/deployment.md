@@ -29,5 +29,10 @@ Denne guiden beskriver hvordan du setter opp GameNight på en egen server.
 6. **Test installasjonen**
    - Åpne siden i en nettleser og bekreft at utfordringer lastes og at appen fungerer offline etter første besøk.
 
+## Spillmodussamlinger
+Applikasjonen forsøker først å laste en statisk JSON-fil for en spillmodus fra `/data/collections/<GAMECODE>.json`.
+Hvis filen ikke finnes, faller den tilbake til API-et (`/api/collection.php?gamecode=<GAMECODE>`).
+Legg statiske samlingsfiler i `public/data/collections` før deploy. Disse filene blir cachet av service-worker for offline bruk.
+
 ## Oppdateringer
 For å oppdatere, hent siste endringer og synkroniser `public/` på nytt. Husk å kjøre eventuell database-migrasjon ved oppdatering av databasen.
