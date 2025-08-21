@@ -1,0 +1,15 @@
+{
+  "admin_title": "GameNight Admin",
+  "articles": "Articles",
+  "collections": "Collections",
+  "games": "Games",
+  "users": "Users",
+  "settings": "Settings",
+  "audit_logs": "Audit Logs",
+  "email": "Email",
+  "password": "Password",
+  "login": "Log in",
+  "admin_login": "Admin Login",
+  "admin": "Admin",
+  "toggle_theme": "Toggle theme"
+}

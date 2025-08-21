@@ -1,26 +1,60 @@
+:root {
+  --bg: #f4f4f4;
+  --text: #333;
+  --header-bg: #222;
+  --header-text: #fff;
+  --sidebar-bg: #333;
+  --sidebar-text: #fff;
+  --link: #555;
+  --help-bg: #eef;
+  --help-border: #ccd;
+}
+[data-theme="dark"] {
+  --bg: #222;
+  --text: #eee;
+  --header-bg: #000;
+  --header-text: #fff;
+  --sidebar-bg: #111;
+  --sidebar-text: #fff;
+  --link: #bbb;
+  --help-bg: #333;
+  --help-border: #555;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: #f4f4f4;
-  color: #333;
+  background: var(--bg);
+  color: var(--text);
 }
 .admin-header {
-  background: #222;
-  color: #fff;
+  background: var(--header-bg);
+  color: var(--header-text);
   padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .admin-header .logo a {
-  color: #fff;
+  color: var(--header-text);
   text-decoration: none;
   font-weight: bold;
+}
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--header-text);
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 1rem;
 }
 .admin-wrapper {
   display: flex;
   min-height: 100vh;
 }
 .admin-sidebar {
-  background: #333;
-  color: #fff;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
   width: 200px;
   padding: 1rem;
 }
@@ -33,7 +67,7 @@ body {
   margin-bottom: 0.5rem;
 }
 .admin-sidebar a {
-  color: #fff;
+  color: var(--sidebar-text);
   text-decoration: none;
 }
 .admin-sidebar li.active a {
@@ -48,12 +82,12 @@ body {
   margin-bottom: 1rem;
 }
 .breadcrumbs a {
-  color: #555;
+  color: var(--link);
   text-decoration: none;
 }
 .help {
-  background: #eef;
-  border: 1px solid #ccd;
+  background: var(--help-bg);
+  border: 1px solid var(--help-border);
   padding: 0.5rem;
   margin-bottom: 1rem;
 }
