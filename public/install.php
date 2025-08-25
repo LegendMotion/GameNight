@@ -35,11 +35,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)) {
         file_put_contents(__DIR__.'/../.env', $env);
 
         if (file_exists(__DIR__.'/../composer.json') && !is_dir(__DIR__.'/../vendor')) {
-            shell_exec('cd .. && composer install --no-dev 2>&1');
+            $output = shell_exec('cd .. && composer install --no-dev 2>&1; echo $?');
+            if ($output === null) {
+                throw new RuntimeException('Composer failed to run.');
+            }
+            $lines = explode("\n", trim($output));
+            $status = array_pop($lines);
+            if ($status !== '0') {
+                throw new RuntimeException("Composer install failed:\n" . implode("\n", $lines));
+            }
         }
 
         file_put_contents(__DIR__.'/../installed.lock', date('c'));
         echo 'Installation complete. Remove install.php for security.';
+        unlink(__FILE__);
         exit;
     } catch (Throwable $e) {
         $errors[] = $e->getMessage();
