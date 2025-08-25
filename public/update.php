@@ -60,34 +60,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $backupDir = __DIR__.'/../backup_'.date('Ymd_His');
     recurseCopy(__DIR__.'/..', $backupDir, ['vendor','node_modules','backup']);
 
-    $extractedRoot = glob($tmpDir.'/*')[0] ?? $tmpDir;
-    recurseCopy(
-        $extractedRoot,
-        __DIR__.'/..',
-        ['.env','installed.lock','backup','install.php','update.php']
-    );
-    if (file_exists($backupDir.'/.env')) {
-        copy($backupDir.'/.env', __DIR__.'/../.env');
-    }
-
-    shell_exec('cd .. && composer install --no-dev 2>&1');
-
-    $env = parseEnv(__DIR__.'/../.env');
     try {
-        $dsn = "mysql:host={$env['DB_HOST']};dbname={$env['DB_NAME']};charset=utf8mb4";
-        $pdo = new PDO($dsn, $env['DB_USER'], $env['DB_PASS'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        foreach (glob(__DIR__.'/../sql/*.sql') as $file) {
-            $pdo->exec(file_get_contents($file));
+        $extractedRoot = glob($tmpDir.'/*')[0] ?? $tmpDir;
+        recurseCopy(
+            $extractedRoot,
+            __DIR__.'/..',
+            ['.env','installed.lock','backup','install.php','update.php']
+        );
+        if (file_exists($backupDir.'/.env')) {
+            copy($backupDir.'/.env', __DIR__.'/../.env');
         }
+
+        $output = [];
+        $returnVar = 0;
+        exec('cd .. && composer install --no-dev 2>&1', $output, $returnVar);
+        if ($returnVar !== 0) {
+            throw new RuntimeException("Composer install failed:\n".implode("\n", $output));
+        }
+
+        $env = parseEnv(__DIR__.'/../.env');
+        try {
+            $dsn = "mysql:host={$env['DB_HOST']};dbname={$env['DB_NAME']};charset=utf8mb4";
+            $pdo = new PDO($dsn, $env['DB_USER'], $env['DB_PASS'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            foreach (glob(__DIR__.'/../sql/*.sql') as $file) {
+                $pdo->exec(file_get_contents($file));
+            }
+        } catch (Throwable $e) {
+            throw new RuntimeException('Database update failed: '.$e->getMessage(), 0, $e);
+        }
+
+        if ($latestVersion) {
+            file_put_contents($versionFile, $latestVersion);
+        }
+
+        echo 'Update complete. Remove update.php for security.';
     } catch (Throwable $e) {
-        echo 'Database update failed: '.htmlspecialchars($e->getMessage());
+        recurseCopy($backupDir, __DIR__.'/..');
+        echo 'Update failed: '.htmlspecialchars($e->getMessage());
     }
-
-    if ($latestVersion) {
-        file_put_contents($versionFile, $latestVersion);
-    }
-
-    echo 'Update complete. Remove update.php for security.';
     exit;
 }
 ?>
