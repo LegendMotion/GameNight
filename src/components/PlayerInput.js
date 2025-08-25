@@ -3,13 +3,17 @@ import { renderModeSelector } from './ModeSelector.js';
 export function renderPlayerInput() {
   const app = document.getElementById('app');
   app.innerHTML = `
-    <h2>Legg til spillere</h2>
-    <ul id="playerList"></ul>
-    <input id="playerName" placeholder="Spillernavn" />
-    <button id="addPlayer">Legg til</button>
-    <p id="playerMessage" style="color: red;"></p>
-    <button id="continue">Fortsett</button>
+    <div class="screen card-transition fade-in">
+      <h2>Legg til spillere</h2>
+      <ul id="playerList"></ul>
+      <input id="playerName" placeholder="Spillernavn" />
+      <button id="addPlayer">Legg til</button>
+      <p id="playerMessage" style="color: red;"></p>
+      <button id="continue">Fortsett</button>
+    </div>
   `;
+  const screen = app.querySelector('.screen');
+  requestAnimationFrame(() => screen.classList.remove('fade-in'));
 
   const playerList = document.getElementById('playerList');
   const players = [];
