@@ -22,6 +22,7 @@ $help = 'Oversikt over samlinger.';
 admin_header(compact('title','page','breadcrumbs','help'));
 ?>
 <h1>Collections</h1>
+<p><a href="import.php">Importer ny collection</a></p>
 <table>
 <thead><tr><th>Navn</th><th>Gamecode</th><th>Synlighet</th><th>Handlinger</th></tr></thead>
 <tbody>
