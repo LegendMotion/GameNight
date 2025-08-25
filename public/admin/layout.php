@@ -21,6 +21,7 @@ function admin_header(array $options = []): void {
 <title><?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); ?></title>
 <link rel="stylesheet" href="/styles/admin.css" />
 <script>(function(){const t=localStorage.getItem('theme')|| (window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+<?php include __DIR__ . '/../meta_tags.php'; ?>
 </head>
 <body>
 <header class="admin-header">

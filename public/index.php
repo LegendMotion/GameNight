@@ -6,6 +6,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="./styles/main.css">
   <title>GameNight</title>
+  <?php include __DIR__ . '/meta_tags.php'; ?>
   <?php include __DIR__ . '/seo_verification.php'; ?>
 </head>
 <body>

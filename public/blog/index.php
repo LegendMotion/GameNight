@@ -39,6 +39,7 @@ if (isset($_GET['ajax'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>GameNight Blogg</title>
 <link rel="stylesheet" href="/styles/main.css" />
+<?php include __DIR__ . '/../meta_tags.php'; ?>
 <?php include __DIR__ . '/../seo_verification.php'; ?>
 </head>
 <body>
