@@ -1,0 +1,11 @@
+<?php
+header('Content-Type: text/plain');
+require_once __DIR__ . '/api/db.php';
+
+$stmt = $pdo->prepare('SELECT value FROM settings WHERE name = ?');
+$stmt->execute(['integrations_adsense_publisher_id']);
+$publisherId = $stmt->fetchColumn();
+
+if ($publisherId) {
+    echo "google.com, {$publisherId}, DIRECT, f08c47fec0942fa0";
+}

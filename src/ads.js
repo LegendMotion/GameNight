@@ -18,13 +18,17 @@ export async function initAds() {
   }
 }
 
-export function renderAdSlot(containerId, type = 'banner') {
+export function renderAdSlot(containerId, type = 'banner', slotId) {
   if (!publisherId) return;
   const container = document.getElementById(containerId);
   if (!container) return;
   const ins = document.createElement('ins');
   ins.className = 'adsbygoogle';
   ins.setAttribute('data-ad-client', publisherId);
+  const slot = slotId || container.dataset.adSlot;
+  if (slot) {
+    ins.setAttribute('data-ad-slot', slot);
+  }
   if (type === 'sidebar') {
     ins.style.display = 'block';
     ins.style.width = '300px';
