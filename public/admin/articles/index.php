@@ -44,7 +44,7 @@ admin_header(compact('title','page','breadcrumbs','help'));
 <p><a href="create.php">Ny artikkel</a></p>
 <?php endif; ?>
 <form method="get" style="margin-bottom:1em;">
-<input type="text" name="q" placeholder="Søk" value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>" />
+<input type="text" name="q" id="filter" placeholder="Søk" value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>" />
 <select name="type">
     <option value="">Alle typer</option>
     <option value="drink"<?php if ($type === 'drink') echo ' selected'; ?>>Drink</option>
@@ -70,6 +70,14 @@ admin_header(compact('title','page','breadcrumbs','help'));
 <?php endforeach; ?>
 </tbody>
 </table>
+<script>
+document.getElementById('filter').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+</script>
 <p>Side <?php echo $pageNum; ?> av <?php echo $totalPages; ?></p>
 <div>
 <?php if ($pageNum > 1): ?>
