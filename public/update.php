@@ -1,5 +1,23 @@
 <?php
 // GameNight update script
+
+// Security: require secret token or IP allowlist
+$clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
+$allowedIps = array_filter(array_map('trim', explode(',', getenv('SETUP_ALLOWED_IPS') ?: '')));
+$secretToken = getenv('SETUP_SECRET_TOKEN') ?: '';
+$providedToken = $_SERVER['HTTP_X_SETUP_TOKEN'] ?? ($_GET['token'] ?? '');
+
+$authorized = false;
+if ($secretToken && hash_equals($secretToken, $providedToken)) {
+    $authorized = true;
+} elseif ($allowedIps && in_array($clientIp, $allowedIps, true)) {
+    $authorized = true;
+}
+if (!$authorized) {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 if (!file_exists(__DIR__.'/../installed.lock')) {
     exit('Application is not installed.');
 }
@@ -93,7 +111,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             file_put_contents($versionFile, $latestVersion);
         }
 
-        echo 'Update complete. Remove update.php for security.';
+        // Log and delete this script for security
+        $logDir = __DIR__.'/../logs';
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+        file_put_contents($logDir.'/update.log', date('c')." update from $clientIp\n", FILE_APPEND);
+        $deleted = @unlink(__FILE__);
+        if ($deleted && !file_exists(__FILE__)) {
+            echo 'Update complete. update.php removed.';
+        } else {
+            echo 'Update complete. Please remove update.php for security.';
+        }
     } catch (Throwable $e) {
         recurseCopy($backupDir, __DIR__.'/..');
         echo 'Update failed: '.htmlspecialchars($e->getMessage());

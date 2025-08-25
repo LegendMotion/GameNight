@@ -1,5 +1,23 @@
 <?php
 // Simple web installer for GameNight
+
+// Security: require secret token or IP allowlist
+$clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
+$allowedIps = array_filter(array_map('trim', explode(',', getenv('SETUP_ALLOWED_IPS') ?: '')));
+$secretToken = getenv('SETUP_SECRET_TOKEN') ?: '';
+$providedToken = $_SERVER['HTTP_X_SETUP_TOKEN'] ?? ($_GET['token'] ?? '');
+
+$authorized = false;
+if ($secretToken && hash_equals($secretToken, $providedToken)) {
+    $authorized = true;
+} elseif ($allowedIps && in_array($clientIp, $allowedIps, true)) {
+    $authorized = true;
+}
+if (!$authorized) {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 if (file_exists(__DIR__.'/../installed.lock')) {
     exit('GameNight is already installed. Remove install.php.');
 }
@@ -47,8 +65,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)) {
         }
 
         file_put_contents(__DIR__.'/../installed.lock', date('c'));
-        echo 'Installation complete. Remove install.php for security.';
-        unlink(__FILE__);
+        // Log and delete this script for security
+        $logDir = __DIR__.'/../logs';
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+        file_put_contents($logDir.'/install.log', date('c')." installation from $clientIp\n", FILE_APPEND);
+        $deleted = @unlink(__FILE__);
+        if ($deleted && !file_exists(__FILE__)) {
+            echo 'Installation complete. install.php removed.';
+        } else {
+            echo 'Installation complete. Please remove install.php for security.';
+        }
         exit;
     } catch (Throwable $e) {
         $errors[] = $e->getMessage();
