@@ -1,6 +1,7 @@
 const CACHE_VERSION = 'v3';
 const CACHE_NAME = `gamenight-cache-${CACHE_VERSION}`;
 const RUNTIME_CACHE = 'runtime-cache-v1';
+const OFFLINE_URL = '/offline.html';
 const PRECACHE_URLS = [
   '/',
   '/index.html',
@@ -22,14 +23,13 @@ const PRECACHE_URLS = [
   '/titles/challenge.png',
   '/titles/jegharaldri.png',
   '/titles/spillthetea.png',
-  '/titles/yayornay.png',
-  '/offline.html'
+  '/titles/yayornay.png'
 ];
 
 self.addEventListener('install', event => {
   console.log('Service Worker installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_URLS))
+    caches.open(CACHE_NAME).then(cache => cache.addAll([...PRECACHE_URLS, OFFLINE_URL]))
   );
 });
 
@@ -62,7 +62,7 @@ self.addEventListener('fetch', event => {
           return response;
         } catch (err) {
           const cached = await cache.match(event.request);
-          return cached || caches.match('/offline.html');
+          return cached || caches.match(OFFLINE_URL);
         }
       })
     );
@@ -81,7 +81,7 @@ self.addEventListener('fetch', event => {
           return response;
         } catch (err) {
           const cached = await cache.match(event.request);
-          return cached || caches.match('/offline.html');
+          return cached || caches.match(OFFLINE_URL);
         }
       })
     );
@@ -92,7 +92,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request).catch(async () => {
         const cached = (await caches.match(event.request)) || (await caches.match('/index.html'));
-        return cached || caches.match('/offline.html');
+        return cached || caches.match(OFFLINE_URL);
       })
     );
     return;
@@ -116,7 +116,7 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => cached || caches.match('/offline.html'));
+        .catch(() => cached || caches.match(OFFLINE_URL));
       return cached || fetchPromise;
     })
   );
