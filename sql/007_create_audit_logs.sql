@@ -10,3 +10,9 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   INDEX (action),
   INDEX (created_at)
 );
+
+INSERT INTO migrations (script_name)
+SELECT '007_create_audit_logs.sql'
+WHERE NOT EXISTS (
+    SELECT 1 FROM migrations WHERE script_name = '007_create_audit_logs.sql'
+);

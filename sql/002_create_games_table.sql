@@ -9,3 +9,9 @@ CREATE TABLE IF NOT EXISTS games (
   edit_token VARCHAR(64) DEFAULT NULL,
   token_expires_at DATETIME DEFAULT NULL
 );
+
+INSERT INTO migrations (script_name)
+SELECT '002_create_games_table.sql'
+WHERE NOT EXISTS (
+    SELECT 1 FROM migrations WHERE script_name = '002_create_games_table.sql'
+);
