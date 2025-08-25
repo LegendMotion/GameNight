@@ -1,6 +1,6 @@
 <?php
 $requireRole = 'admin';
-require_once '../auth.php';
+require_once '../layout.php';
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -55,14 +55,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Edit User</title>
-<link rel="stylesheet" href="/styles/main.css" />
-</head>
-<body>
+<?php
+$title = 'Edit User';
+$page = 'users';
+$breadcrumbs = [
+    ['label' => 'Users', 'url' => 'index.php'],
+    ['label' => 'Edit']
+];
+admin_header(compact('title','page','breadcrumbs'));
+?>
 <h1>Edit User</h1>
 <?php if (!empty($message)): ?><p style="color:green;"><?php echo $message; ?></p><?php endif; ?>
 <?php if (!empty($error)): ?><p style="color:red;"><?php echo $error; ?></p><?php endif; ?>
@@ -73,11 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <option value="viewer"<?php if ($user['role'] === 'viewer') echo ' selected'; ?>>Viewer</option>
     <option value="editor"<?php if ($user['role'] === 'editor') echo ' selected'; ?>>Editor</option>
     <option value="admin"<?php if ($user['role'] === 'admin') echo ' selected'; ?>>Admin</option>
-</select>
+ </select>
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Update</button>
 </form>
 <p>MFA: <?php echo $user['mfa_enabled'] ? 'Enabled' : 'Disabled'; ?><?php if ($user['mfa_enabled']): ?> (<a href="reset_mfa.php?id=<?php echo $user['id']; ?>">Reset MFA</a>)<?php endif; ?></p>
 <p><a href="index.php">Back to users</a></p>
-</body>
-</html>
+<?php admin_footer(); ?>

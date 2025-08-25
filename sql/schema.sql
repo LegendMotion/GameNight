@@ -1,4 +1,13 @@
 -- SQL schema for GameNight blog and collections
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('admin','editor','viewer') NOT NULL DEFAULT 'viewer',
+  mfa_secret VARCHAR(255) DEFAULT NULL,
+  mfa_enabled TINYINT(1) NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS posts (
   id INT AUTO_INCREMENT PRIMARY KEY,
   slug VARCHAR(100) NOT NULL UNIQUE,
