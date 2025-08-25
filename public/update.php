@@ -61,7 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     recurseCopy(__DIR__.'/..', $backupDir, ['vendor','node_modules','backup']);
 
     $extractedRoot = glob($tmpDir.'/*')[0] ?? $tmpDir;
-    recurseCopy($extractedRoot, __DIR__.'/..', ['.env','installed.lock','backup']);
+    recurseCopy(
+        $extractedRoot,
+        __DIR__.'/..',
+        ['.env','installed.lock','backup','install.php','update.php']
+    );
     if (file_exists($backupDir.'/.env')) {
         copy($backupDir.'/.env', __DIR__.'/../.env');
     }

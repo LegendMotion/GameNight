@@ -12,6 +12,7 @@
 2. When confirmed it downloads the latest release from the repository, backs up existing files, extracts the update, and restores your `.env`.
 3. Composer dependencies and database migrations are executed automatically.
 4. `version.txt` is updated and you are prompted that the update is complete. **Delete `update.php`** when finished.
+5. The updater skips `install.php` and `update.php`, so once removed these scripts stay absent in future releases.
 
 ## Security Notes
 - Restrict access to `install.php` and `update.php` or remove them entirely after use.
