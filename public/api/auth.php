@@ -47,7 +47,7 @@ if ($user && password_verify($password, $user['password_hash'])) {
     $_SESSION['role'] = $user['role'];
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     log_audit($pdo, (int)$user['id'], 'login', '', ['ip' => $_SERVER['REMOTE_ADDR'] ?? '']);
-    echo json_encode(['success' => true]);
+    echo json_encode(['success' => true, 'role' => $user['role']]);
 } else {
     http_response_code(401);
     echo json_encode(['error' => 'Invalid credentials']);
