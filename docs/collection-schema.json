@@ -5,7 +5,10 @@
   "properties": {
     "name": { "type": "string" },
     "friendlyName": { "type": "string" },
-    "gamecode": { "type": "string" },
+    "gamecode": {
+      "type": "string",
+      "description": "Short code players can enter. Omit to auto-generate."
+    },
     "public": { "type": "boolean" },
     "language": { "type": "string" },
     "challenges": {
@@ -13,5 +16,5 @@
       "items": { "$ref": "game-schema.json" }
     }
   },
-  "required": ["name", "gamecode", "public", "challenges"]
+  "required": ["name", "public", "challenges"]
 }

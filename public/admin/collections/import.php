@@ -1,6 +1,10 @@
 <?php
-$requireRole = ['admin','editor'];
-require_once '../layout.php';
+if (defined('UNIT_TEST')) {
+    $requireLogin = false;
+} else {
+    $requireRole = ['admin','editor'];
+}
+require_once __DIR__ . '/../layout.php';
 require_once __DIR__ . '/../../api/db.php';
 require_once __DIR__ . '/../../api/audit_log.php';
 
@@ -76,8 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute([$data['gamecode'], $visibility, $encoded]);
                     $newId = $pdo->lastInsertId();
                     log_audit($pdo, (int)($_SESSION['user_id'] ?? 0), 'collection_create', $data['gamecode']);
-                    header('Location: edit.php?id=' . $newId);
-                    exit;
+                    if (!defined('UNIT_TEST')) {
+                        header('Location: edit.php?id=' . $newId);
+                        exit;
+                    }
+                    echo $data['gamecode'];
+                    return;
                 }
             }
         }
@@ -91,6 +99,12 @@ $breadcrumbs = [
     ['label' => 'Importer']
 ];
 $help = 'Last opp eller lim inn JSON for å importere en samling.';
+if (defined('UNIT_TEST')) {
+    if ($error) {
+        echo $error;
+    }
+    return;
+}
 admin_header(compact('title','page','breadcrumbs','help'));
 ?>
 <h1>Importer Collection</h1>

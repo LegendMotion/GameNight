@@ -9,7 +9,7 @@ This guide describes how to ask ChatGPT for new challenge collections that match
 | --- | --- | --- | --- |
 | `name` | string | Yes | Machine-friendly identifier, e.g. `classic_party` |
 | `friendlyName` | string | No | Human readable title |
-| `gamecode` | string | Yes | Short code players can enter |
+| `gamecode` | string | No | Short code players can enter (auto-generated when omitted) |
 | `public` | boolean | Yes | `true` for public collections |
 | `language` | string | No | ISO language code, e.g. `en`, `no` |
 | `challenges` | array | Yes | List of challenge objects (see below) |
@@ -38,11 +38,11 @@ Collection settings:
 - language: <LANGUAGE_CODE>
 - collection name: <NAME>
 - friendly name: <FRIENDLY_NAME>
-- gamecode: <GAMECODE>
 - number of challenges: <COUNT>
 - public: true
 
 Rules:
+- Do not include the `gamecode` field; it will be assigned automatically.
 - Use placeholders like {{player}} when needed.
 - Each challenge must include id, type, and title.
 - Do not add commentary or markdown, only JSON.

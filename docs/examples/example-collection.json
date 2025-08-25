@@ -1,7 +1,6 @@
 {
   "name": "classic_party",
   "friendlyName": "Klassisk festmodus",
-  "gamecode": "FEST123",
   "public": true,
   "language": "no",
   "image": "public/challenges/klassisk.png",
