@@ -70,7 +70,13 @@ export function showChallenge(collection, opts = {}) {
     }
     const next = unused[Math.floor(Math.random() * unused.length)];
     shownIds.add(next.id);
-    renderChallenge(next);
+    const current = app.querySelector('.challenge-card');
+    if (current) {
+      current.classList.add('fade-out');
+      current.addEventListener('transitionend', () => renderChallenge(next), { once: true });
+    } else {
+      renderChallenge(next);
+    }
   }
 
   function renderChallenge(challenge) {
@@ -79,12 +85,14 @@ export function showChallenge(collection, opts = {}) {
       document.body.style.backgroundImage = `url('${assets.background}')`;
     }
     app.innerHTML = `
-      <div class="challenge-card">
+      <div class="challenge-card card-transition fade-in">
         <img src="${assets.title}" alt="${challenge.type}" />
         <h3>${replacePlaceholders(challenge.title)}</h3>
         <button id="${nextBtnId}">Neste</button>
       </div>
     `;
+    const card = app.querySelector('.challenge-card');
+    requestAnimationFrame(() => card.classList.remove('fade-in'));
     document.getElementById(nextBtnId).addEventListener('click', getNextChallenge);
   }
 
