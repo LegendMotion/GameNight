@@ -6,6 +6,8 @@ if (empty($_SESSION['csrf_token'])) {
 }
 require_once __DIR__ . '/../../api/db.php';
 require_once __DIR__ . '/../../api/audit_log.php';
+define('ARTICLE_HELPER', true);
+require_once __DIR__ . '/../../api/article.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $requirements = trim($_POST['requirements'] ?? '');
         $ingredients = trim($_POST['ingredients'] ?? '');
-        $content = trim($_POST['content'] ?? '');
+        $content = sanitize_article_html(trim($_POST['content'] ?? ''));
         $featured_image = $article['featured_image'];
         if (!empty($_FILES['featured_image']['name']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../uploads/articles/';
@@ -83,6 +85,8 @@ $breadcrumbs = [
 $help = 'Oppdater artikkeldetaljer.';
 admin_header(compact('title','page','breadcrumbs','help'));
 ?>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <h1>Rediger artikkel</h1>
 <?php if (!empty($message)): ?><p style="color:green;"><?php echo $message; ?></p><?php endif; ?>
 <?php if (!empty($error)): ?><p style="color:red;"><?php echo $error; ?></p><?php endif; ?>
@@ -96,8 +100,16 @@ admin_header(compact('title','page','breadcrumbs','help'));
 <textarea name="requirements" placeholder="Krav"><?php echo htmlspecialchars($article['requirements'], ENT_QUOTES, 'UTF-8'); ?></textarea>
 <textarea name="ingredients" placeholder="Ingredienser"><?php echo htmlspecialchars($article['ingredients'], ENT_QUOTES, 'UTF-8'); ?></textarea>
 <input type="file" name="featured_image" accept="image/*" />
-<textarea name="content" placeholder="Innhold"><?php echo htmlspecialchars($article['content'], ENT_QUOTES, 'UTF-8'); ?></textarea>
+<div id="editor"></div>
+<input type="hidden" name="content" id="content">
 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 <button type="submit">Oppdater</button>
 </form>
+<script>
+const quill = new Quill('#editor', { theme: 'snow' });
+quill.root.innerHTML = <?php echo json_encode($article['content']); ?>;
+document.querySelector('form').addEventListener('submit', function() {
+  document.getElementById('content').value = quill.root.innerHTML;
+});
+</script>
 <?php admin_footer(); ?>

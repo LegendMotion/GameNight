@@ -2,9 +2,14 @@
 header('Content-Type: application/json');
 session_start();
 require_once __DIR__ . '/db.php';
-
-$stmt = $pdo->prepare("SELECT id, slug, title, featured_image FROM games WHERE visibility = 'public' ORDER BY id DESC");
-$stmt->execute();
+$search = trim($_GET['q'] ?? '');
+if ($search !== '') {
+    $stmt = $pdo->prepare("SELECT id, slug, title, featured_image FROM games WHERE visibility = 'public' AND (title LIKE ? OR slug LIKE ?) ORDER BY id DESC");
+    $stmt->execute(["%$search%", "%$search%"]);
+} else {
+    $stmt = $pdo->prepare("SELECT id, slug, title, featured_image FROM games WHERE visibility = 'public' ORDER BY id DESC");
+    $stmt->execute();
+}
 $games = $stmt->fetchAll();
 
 $response = json_encode($games);

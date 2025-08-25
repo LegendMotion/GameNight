@@ -3,12 +3,21 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/db.php';
 
 $type = $_GET['type'] ?? '';
+$search = trim($_GET['q'] ?? '');
+$params = [];
+$where = "visibility = 'public'";
 if ($type !== '') {
-    $stmt = $pdo->prepare("SELECT id, slug, title, type, featured_image, created_at FROM posts WHERE visibility = 'public' AND type = ? ORDER BY created_at DESC");
-    $stmt->execute([$type]);
-} else {
-    $stmt = $pdo->query("SELECT id, slug, title, type, featured_image, created_at FROM posts WHERE visibility = 'public' ORDER BY created_at DESC");
+    $where .= " AND type = ?";
+    $params[] = $type;
 }
+if ($search !== '') {
+    $where .= " AND (title LIKE ? OR slug LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+}
+$sql = "SELECT id, slug, title, type, featured_image, created_at FROM posts WHERE $where ORDER BY created_at DESC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 
 $posts = $stmt->fetchAll();
 if (empty($posts)) {
